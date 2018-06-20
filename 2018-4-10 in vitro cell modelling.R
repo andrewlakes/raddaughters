@@ -54,9 +54,9 @@ activity = c(k1 = 58, k2 = 176026.2, k3 = 1609541800, k4 = 20000, k5 = 1.3*10^13
              k12 = 0.072, k13 = 31, k14 = 38926.9, k15 = 51.2, k16 = 13008438.4, k17 = 29461992937, k18 = 24639.1739, k19 = 416405.3549, k20 = 190584.9219, k21 = 0) 
 
 #initial activity in uCi
-uciac225 =  30/1000 #0.1 nCi = 220 CPM  ->>>> divide by #major species (5) if in transient equilibrium, don't include minor species.
-ucilu177 = 4000/1000 
-uciac227 = 1 #/8 divide by # starting @EQ (8) to get total dose equivalency, don't include minor species.
+uciac225 =  20/1000 #0.1 nCi = 220 CPM  ->>>> divide by #major species (5) if in transient equilibrium, don't include minor species.
+ucilu177 = 20*700/1000 
+uciac227 = 20/1000 #/8 divide by # starting @EQ (8) to get total dose equivalency, don't include minor species.
 
 #Initial nmoles of actinium-225
 #use the mol ratios #agged out to start at transient equilibiurm - but change the uciac225 starting activity accordingly as well.
@@ -82,8 +82,8 @@ nmoleslu177 = ucilu177/110/177
 
 #divide by mole ratio if starting at EQ (200 days), otherwise create initial non-steady state mol ratio set to start halfway in or whatever
 
-nmolesac227 = 0#uciac227/0.072/227
-nmolesth227 = uciac227/31/227#0.002323661*nmolesac227
+nmolesac227 = uciac227/0.072/227 #uciac227/0.072/227
+nmolesth227 = 0#uciac227/31/227 #0.002323661*nmolesac227
 nmolesfr223 = 0#3.77269E-05*nmolesac227 #isn't chelated by dota
 nmolesra223 = 0#0.00144379*nmolesac227 #isn't chelated by dota
 nmolesrn219 = 0#5.78948E-09*nmolesac227
@@ -163,8 +163,8 @@ daughters = function(t, state, parameters, probabilities) {with(as.list(c(state,
 ##### Time scale #####
 #Ac-227 timefame
 #timedays = 365*21.772                                     #total days for plot
-timedays = 4
-timestep = 0.01                                   #step size
+timedays = 7946
+timestep = 0.1                                   #step size
 timestepout = 1/timestep                           #to make a timesout match starting at 1
 
 times = seq(0, timedays, by = timestep)     #list all points
@@ -215,7 +215,7 @@ Ac227SUM = (Ac227+Th227+Fr223+Ra223+Rn219+Po215+Pb211+Bi211+Tl207+Pb207)
 
 daughtersdata = data.frame(times)
 daughtersdata = cbind(daughtersdata, Ac225, Fr221, At217, Bi213, Po213, Pb209, Bi209, Rn217, Tl209, SUM, SUMoverac225, Lu177, Hf177, Ac227, Th227, Fr223, Ra223, Rn219, Po215, Pb211, Bi211, Tl207, Pb207, Ac227SUM)
-colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM Ac-225", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Ac-227", "Th227", "Fr223", "Ra223", "Rn219", "Po215", "Pb211", "Bi211", "Tl207", "Pb207", "Ac-227 SUM")
+colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM Ac-225", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "Ac-227 SUM")
 
 
 #melt this first
@@ -231,17 +231,23 @@ plottimes <- times[plotrows]
 
 #Ac-225&Lu-177/Hf-177 *****#8 is Bi-209 final product
 plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11)]#,13,14)]
-
-#Ac-227
-#plotout <- daughtersdata[plotrows, c(1,15,16,17,18,19,20,21,22,23,24,25)] 
 plotout = plotout[-1,] #remove first row
 
 mplotout <- melt(plotout, id="times")
 colnames(mplotout) <- c("times","Species","value")
 
+
+#Ac-227
+plotout2 <- daughtersdata[plotrows, c(1,15,16,17,18,19,20,21,22,23,24,25)] 
+plotout2 = plotout2[-1,] #remove first row
+
+mplotout2 <- melt(plotout2, id="times")
+colnames(mplotout2) <- c("times","Species","value")
+
 #---- new section ----
 #plot the indivudual activities produced
 
+#Plot Ac-225
 ggplot(mplotout, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
@@ -260,8 +266,26 @@ ggplot(mplotout, aes(x=times, y=value, by=Species))+
         axis.text.x=element_text(colour="black"))+
   guides(shape=guide_legend(override.aes = list(size=3)))
 #  guides(color=guide_legend(title=""))
-  
 
+
+#Plot Ac-227  
+ggplot(mplotout2, aes(x=times, y=value, by=Species))+
+  geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
+  
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000))+
+  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+                      short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
+                      colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
+  
+  scale_y_continuous(labels = scales::percent, breaks=c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))+
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  labs(x = "Time (day)", y = "% Activity(t) / Ac-227(0)", color="Species")+
+  theme(text = element_text(size=18, face = "bold"),
+        axis.text.y=element_text(colour="black"),
+        axis.text.x=element_text(colour="black"))+
+  guides(shape=guide_legend(override.aes = list(size=3)))
 
 #melt the masses
 #choose columns
@@ -343,10 +367,102 @@ eAc227SUM = (eAc227+eTh227+eFr223+eRa223+eRn219+ePo215+ePb211+eBi211+eTl207+ePb2
 
 edaughtersdata = data.frame(times)
 edaughtersdata = cbind(edaughtersdata, eAc225, eFr221, eAt217, eBi213, ePo213, ePb209, eBi209, eRn217, eTl209, eSUM, eSUMoverac225, eLu177, eAlpha, eBeta, eAc227, eTh227, eFr223, eRa223, eRn219, ePo215, ePb211, eBi211, eTl207, ePb207, eAc227SUM)
-colnames(edaughtersdata) = c("times", "Ac-225 (30 nCi)", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "Ac-225 SUM", "SUM / Ac-225", "Lu-177 (4000 nCi)", "Ac-225 SUM Alpha", "Ac-225 SUM Beta", "Ac-227 (0.2 ?Ci)", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "Ac-227 SUM")
+colnames(edaughtersdata) = c("times", "Ac-225 (20 nCi)", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "Ac-225 SUM", "SUM / Ac-225", "Lu-177 (4000 nCi)", "Ac-225 SUM Alpha", "Ac-225 SUM Beta", "Ac-227 (20 nCi)", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "Ac-227 SUM")
 
 eplotrows = unique(round(lseq(1, length(timesout), 10000)))
 eplottimes <- times[eplotrows]
+
+
+#plot out the energies MeV/min vs time (days)
+
+
+eplotout <- edaughtersdata[eplotrows, c(1,2,3,4,5,6,7,9,10,8,11)]#,13,14)]
+eplotout = eplotout[-1,] #remove first row
+
+meplotout <- melt(eplotout, id="times")
+colnames(meplotout) <- c("times","Species","value")
+
+
+#Ac-227
+eplotout2 <- edaughtersdata[eplotrows, c(1,16,17,18,19,20,21,22,23,24,25,26)] 
+eplotout2 = eplotout2[-1,] #remove first row
+
+meplotout2 <- melt(eplotout2, id="times")
+colnames(meplotout2) <- c("times","Species","value")
+
+#---- energy plot ----
+#plot the indivudual activities produced
+
+#Plot Ac-225
+ggplot(meplotout, aes(x=times, y=value, by=Species))+
+  geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
+  
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000))+
+  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+                      short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
+                      colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
+  
+  scale_y_continuous(breaks=c(0, 2*10^8, 4*10^8, 6*10^8, 8*10^8, 10*10^8, 12*10^8, 14*10^8, 16*10^8, 18*10^8, 20*10^8, 22*10^8, 24*10^8))+
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  labs(x = "Time (day)", y = "Power (MeV/min)", color="Species")+
+  theme(text = element_text(size=18, face = "bold"),
+        axis.text.y=element_text(colour="black"),
+        axis.text.x=element_text(colour="black"))+
+  guides(shape=guide_legend(override.aes = list(size=3)))
+#  guides(color=guide_legend(title=""))
+
+
+#Plot Ac-227  
+ggplot(meplotout2, aes(x=times, y=value, by=Species))+
+  geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
+  
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000))+
+  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+                      short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
+                      colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
+  
+  scale_y_continuous(breaks=c(0, 2*10^8, 4*10^8, 6*10^8, 8*10^8, 10*10^8, 12*10^8, 14*10^8, 16*10^8, 18*10^8, 20*10^8, 22*10^8, 24*10^8))+
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  labs(x = "Time (day)", y = "Power (MeV/min)", color="Species")+
+  theme(text = element_text(size=18, face = "bold"),
+        axis.text.y=element_text(colour="black"),
+        axis.text.x=element_text(colour="black"))+
+  guides(shape=guide_legend(override.aes = list(size=3)))
+
+
+
+
+
+#### plot all 4 plots ####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ###### destructions per day vs days
@@ -891,7 +1007,7 @@ ggplot(mintensityplotsorder, aes(x=value, y=Frequency, by=Species))+
 
 
 #### SUPER LOOP ####
-its = 25
+its = 100
 dEdxexcomboSUPER = array(0, dim=c(nrow(rplotout),ncol(rplotout),its))
 for (ii in 1:its){  
 
@@ -911,8 +1027,8 @@ phi = runif(length(rplottimes), 0, 2*pi) #lowercase phi is the point location
 pz = runif(length(rplottimes), 0, wellheight)
 
 #scaling factor -- check how close to kD it is?
-pz = pz^9
-pz = pz/wellheight^9*wellheight
+pz = pz^7
+pz = pz/wellheight^7*wellheight
 #end scaling factor
 
 px <- rho*cos(phi)
@@ -1834,7 +1950,7 @@ ggplot(mdEdxexintGy, aes(x=times, y=value, by=Species))+
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
   
-  labs(x = "Time (day)", y = "Absorbed Dose/Cell (MeV)")+
+  labs(x = "Time (day)", y = "Absorbed Dose/Cell (Gy)")+
   theme(text = element_text(size=18, face = "bold"))
 
 
