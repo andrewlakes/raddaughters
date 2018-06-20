@@ -13,6 +13,7 @@ library(gridExtra)
 library(abind)
 library(RColorBrewer)
 library(tidyr)
+library(GenKern)
 
 #library(asmath)
 
@@ -325,7 +326,11 @@ ggplot(mout, aes(x=time, y=value, by=Species))+
 
 
 
-#####test#####µ
+
+
+
+
+
 ################
 #Total energy produced from starting amount of metal
 
@@ -432,7 +437,6 @@ ggplot(meplotout2, aes(x=times, y=value, by=Species))+
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
   guides(shape=guide_legend(override.aes = list(size=3)))
-
 
 
 
