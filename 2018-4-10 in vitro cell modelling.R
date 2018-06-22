@@ -55,7 +55,7 @@ activity = c(k1 = 58, k2 = 176026.2, k3 = 1609541800, k4 = 20000, k5 = 1.3*10^13
              k12 = 0.072, k13 = 31, k14 = 38926.9, k15 = 51.2, k16 = 13008438.4, k17 = 29461992937, k18 = 24639.1739, k19 = 416405.3549, k20 = 190584.9219, k21 = 0) 
 
 #initial activity in uCi
-uciac225 =  20/1000 #0.1 nCi = 220 CPM  ->>>> divide by #major species (5) if in transient equilibrium, don't include minor species.
+uciac225 =  200/1000 #0.1 nCi = 220 CPM  ->>>> divide by #major species (5) if in transient equilibrium, don't include minor species.
 ucilu177 = 20*700/1000 
 uciac227 = 20/1000 #/8 divide by # starting @EQ (8) to get total dose equivalency, don't include minor species.
 
@@ -216,7 +216,7 @@ Ac227SUM = (Ac227+Th227+Fr223+Ra223+Rn219+Po215+Pb211+Bi211+Tl207+Pb207)
 
 daughtersdata = data.frame(times)
 daughtersdata = cbind(daughtersdata, Ac225, Fr221, At217, Bi213, Po213, Pb209, Bi209, Rn217, Tl209, SUM, SUMoverac225, Lu177, Hf177, Ac227, Th227, Fr223, Ra223, Rn219, Po215, Pb211, Bi211, Tl207, Pb207, Ac227SUM)
-colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM Ac-225", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "Ac-227 SUM")
+colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "SUM")
 
 
 #melt this first
@@ -249,7 +249,7 @@ colnames(mplotout2) <- c("times","Species","value")
 #plot the indivudual activities produced
 
 #Plot Ac-225
-ggplot(mplotout, aes(x=times, y=value, by=Species))+
+plot225 = ggplot(mplotout, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
@@ -270,7 +270,7 @@ ggplot(mplotout, aes(x=times, y=value, by=Species))+
 
 
 #Plot Ac-227  
-ggplot(mplotout2, aes(x=times, y=value, by=Species))+
+plot227 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
@@ -287,6 +287,17 @@ ggplot(mplotout2, aes(x=times, y=value, by=Species))+
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
   guides(shape=guide_legend(override.aes = list(size=3)))
+
+
+#plot both 225 and 227
+
+grid.arrange(arrangeGrob(plot225, plot227, ncol=2))
+
+
+
+
+
+
 
 #melt the masses
 #choose columns
