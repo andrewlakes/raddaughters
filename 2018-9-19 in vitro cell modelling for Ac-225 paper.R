@@ -452,6 +452,64 @@ ggplot(meplotout2, aes(x=times, y=value, by=Species))+
 
 
 
+#### Plot Power fraction from starting with pure sample ####
+
+eplotoutf = eplotout[,2:ncol(eplotout)]/eplotout[1,2]
+eplotoutf = cbind(eplotout[,1],eplotoutf)
+colnames(eplotoutf)[1:2] = c("times", "Ac-225")
+colnames(eplotoutf)[ncol(eplotoutf)] = "SUM"
+meplotoutf = melt(eplotoutf, id="times")
+colnames(meplotoutf) <- c("times","Species","value")
+
+ggplot(meplotoutf, aes(x=times, y=value, by=Species))+
+  geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
+  
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000))+
+  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+                      short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
+                      colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
+  
+  scale_y_continuous(labels = scales::percent)+
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  labs(x = "Time (day)", y = "% Power(t)/Ac-225(0) ", color="Species")+
+  theme(text = element_text(size=18, face = "bold"),
+        axis.text.y=element_text(colour="black"),
+        axis.text.x=element_text(colour="black"))+
+  guides(shape=guide_legend(override.aes = list(size=3)))
+
+
+#Lu-177 same thing
+
+
+eplotoutlu <- cbind(edaughtersdata[eplotrows, c(1,13)],0)
+eplotoutlu = eplotoutlu[-1,] #remove first row
+eplotoutlu = data.frame(cbind(eplotoutlu[,1],eplotoutlu[,2:3]/eplotoutlu[1,2]))
+colnames(eplotoutlu) = c("times","Lu-177", "Hf-177")
+
+meplotoutlu = melt(eplotoutlu, id="times")
+colnames(meplotoutlu) <- c("times","Species","value")
+
+ggplot(meplotoutlu, aes(x=times, y=value, by=Species))+
+  geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
+  scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
+  
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000))+
+  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+                      short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
+                      colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
+  
+  scale_y_continuous(labels = scales::percent)+
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  labs(x = "Time (day)", y = "% Power(t)/Lu-177(0) ", color="Species")+
+  theme(text = element_text(size=18, face = "bold"),
+        axis.text.y=element_text(colour="black"),
+        axis.text.x=element_text(colour="black"))+
+  guides(shape=guide_legend(override.aes = list(size=3)))
+
+
 #### plot all 4 plots ####
 
 
