@@ -734,7 +734,7 @@ lorentzi = function(Exb){Exb/(me*sol^2)+1}
 ##### Alpha dE/dx #####
 #finite difference method - start matrix with initial conditions and fill in by row until dE/dx <0
 #column 7 is integration of dE/dx by stepsize
-dEadxtable = array(data=NA, dim=c(1250,7,6), dimnames=list(NULL,c('Distance (mm)', 'dE/dx (MeV/mm)', 'Velocity (m/s)', 'E(x) (MeV)', 'deltaE(x) (MeV)', 'Charge', 'Energy Integration'),c("Ac-Fr", "Fr-At", "At-Bi", "Bi-Tl", "Po-Pb", "Rn-Po")))
+dEadxtable = array(data=NA, dim=c(1250,7,6), dimnames=list(NULL,c('Distance (mm)', 'dE/dx (MeV/mm)', 'Velocity (m/s)', 'E(x) (MeV)', 'deltaE(x) (MeV)', 'Charge', 'Energy Integration'),c("Ac-225 to Fr-221", "Fr-221 to At-217", "At-217 to Bi-213", "Bi-213 to Tl-209", "Po-213 to Pb-209", "Rn-217 to Po-213")))
 for(j in 1:6){
 for(i in 1:(nrow(dEadxtable)-1)){
   dEadxtable[1,1,j] = dstart #mm
@@ -761,8 +761,11 @@ for(i in 1:(nrow(dEadxtable)-1)){
 dEadxtablemev = dEadxtable[,c(2,7),]/1000000/joulesperev
 dEadxtable1 = data.frame(cbind(dEadxtable[,1,1],dEadxtablemev[,1,]))
 colnames(dEadxtable1)[1] = 'Distance'
+colnames(dEadxtable1)[2:ncol(dEadxtable)] = c("Ac-225 to Fr-221", "Fr-221 to At-217", "At-217 to Bi-213", "Bi-213 to Tl-209", "Po-213 to Pb-209", "Rn-217 to Po-213")
 dEadxtable2 = data.frame(cbind(dEadxtable[,1,1],dEadxtablemev[,2,]))
 colnames(dEadxtable2)[1] = 'Distance'
+colnames(dEadxtable2)[2:ncol(dEadxtable)] = c("Ac-225 to Fr-221", "Fr-221 to At-217", "At-217 to Bi-213", "Bi-213 to Tl-209", "Po-213 to Pb-209", "Rn-217 to Po-213")
+
 
 broundfactor = 5
 dEadxtable3 = cbind(round(dEadxtable2$Distance, broundfactor),dEadxtable2[,2:ncol(dEadxtable2)])
@@ -799,6 +802,7 @@ ggplot(mdEadxtable1, aes(x=Distance, y=value, by=Species))+
 dEadxtablevel = cbind(dEadxtable[,3,])
 dEadxtablevelocity = data.frame(cbind(dEadxtable[,1,1], dEadxtablevel))
 colnames(dEadxtablevelocity)[1] = "Distance"
+colnames(dEadxtablevelocity)[2:ncol(dEadxtablevelocity)] = c("Ac-225 to Fr-221", "Fr-221 to At-217", "At-217 to Bi-213", "Bi-213 to Tl-209", "Po-213 to Pb-209", "Rn-217 to Po-213")
 mdEadxtablevelocity = melt(dEadxtablevelocity, id="Distance")
 colnames(mdEadxtablevelocity) = c("Distance", "Species", "value")
 
@@ -852,11 +856,13 @@ dEbdxtablemev = dEbdxtable[,c(2,7),]/1000000/joulesperev
 
 dEbdxtable1 = data.frame(cbind(dEbdxtable[,1,1],dEbdxtablemev[,1,]))
 colnames(dEbdxtable1)[1] = 'Distance'
+colnames(dEbdxtable1)[2:ncol(dEbdxtable1)] = c("Bi-213 to Po-213","At-217 to Rn-217","Tl-209 to Pb-209","Pb-209 to Bi-209","Lu-177 to Hf-177")
 #add a 0 row at correct distance
 dEbdxtable1 = rbind(dEbdxtable1, c(dEbdxtable1[nrow(dEbdxtable1),1],0,0,0,0,0,0))
 
 dEbdxtable2 = data.frame(cbind(dEbdxtable[,1,1],dEbdxtablemev[,2,]))
 colnames(dEbdxtable2)[1] = 'Distance'
+colnames(dEbdxtable2)[2:ncol(dEbdxtable2)] = c("Bi-213 to Po-213","At-217 to Rn-217","Tl-209 to Pb-209","Pb-209 to Bi-209","Lu-177 to Hf-177")
 #add a 0 row
 dEbdxtable2 = rbind(dEbdxtable2, c(dEbdxtable2[nrow(dEbdxtable2),1],0,0,0,0,0,0))
 
@@ -930,6 +936,7 @@ ggplot(mdEbdxtable1[which(mdEbdxtable1$Distance != 0),], aes(x=Distance, y=value
 dEbdxtablevel = cbind(dEbdxtable[,3,])
 dEbdxtablevelocity = data.frame(cbind(dEbdxtable[,1,1], dEbdxtablevel))
 colnames(dEbdxtablevelocity)[1] = "Distance"
+colnames(dEbdxtablevelocity)[2:ncol(dEbdxtablevelocity)] = c("Bi-213 to Po-213","At-217 to Rn-217","Tl-209 to Pb-209","Pb-209 to Bi-209","Lu-177 to Hf-177")
 mdEbdxtablevelocity = melt(dEbdxtablevelocity, id="Distance")
 colnames(mdEbdxtablevelocity) = c("Distance", "Species", "value")
 
@@ -962,7 +969,7 @@ dEbdxtable2sum = c(sum(dEbdxtable2[,2],na.rm=TRUE),sum(dEbdxtable2[,3],na.rm=TRU
 #maximum distances are based on dEbdxtable maximum values travelled. This intensity plot acts as a random walk for linear energy scaling.
 
 #maximumdistances = data.frame("Ac-Fr" = 0.0674, "Fr-At" = 0.0754, "At-Bi" = 0.0876, "Bi-Tl" = 0.0680, "Po-Pb" = 0.1119, "Rn-Po" = 0.0996, "Bi-Po" = 2.034659, "At-Rn" = 0.7790638, "Tl-Pb" = 7.476779, "Pb-Bi" = 0.6326188, "Lu-Hf" = 0.4210299 )
-maximumdistances = data.frame("Ac-Fr" = 0.0674, "Fr-At" = 0.0754, "At-Bi" = 0.0876, "Bi-Tl" = 0.0680, "Po-Pb" = 0.1119, "Rn-Po" = 0.0996, "Bi-Po" = 2.034659, "At-Rn" = 0.7790638, "Tl-Pb" = 7.476779, "Pb-Bi" = 0.6326188, "Lu-Hf" = dEbdxtable3[which(dEbdxtable3$Lu.Hf == max(dEbdxtable3$Lu.Hf)),1] )
+maximumdistances = data.frame("Ac-Fr" = 0.0674, "Fr-At" = 0.0754, "At-Bi" = 0.0876, "Bi-Tl" = 0.0680, "Po-Pb" = 0.1119, "Rn-Po" = 0.0996, "Bi-Po" = 2.034659, "At-Rn" = 0.7790638, "Tl-Pb" = 7.476779, "Pb-Bi" = 0.6326188, "Lu-Hf" = dEbdxtable3[which(dEbdxtable3$"Lu-177 to Hf-177" == max(dEbdxtable3$"Lu-177 to Hf-177")),1] )
 
 halfdistances = data.frame(c(maximumdistances[7],maximumdistances[8],maximumdistances[9],maximumdistances[10],maximumdistances[11]))/8  
   
@@ -1085,7 +1092,7 @@ ggplot(mintensityplotsorderprobability, aes(x=value, y=Probability, by=Species))
 
 
 #### SUPER LOOP ####
-its = 100
+its = 10
 dEdxexcomboSUPER = array(0, dim=c(nrow(rplotout),ncol(rplotout),its))
 for (ii in 1:its){  
 
