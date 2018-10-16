@@ -197,6 +197,7 @@ Rn217 = masses[8]*activity[8]*out[timesout,9]*2220000/dpmac225
 Tl209 = masses[9]*activity[9]*out[timesout,10]*2200000/dpmac225
 SUM = (Ac225+Fr221+At217+Bi213+Po213+Pb209+Bi209+Rn217+Tl209)
 SUMoverac225 = SUM/Ac225
+SUMalpha = (Ac225+Fr221+At217+Po213) 
 Lu177 = masses[10]*activity[10]*out[timesout,11]*2220000/dpmlu177
 Hf177 = masses[11]*activity[11]*out[timesout,12]*2220000/dpmlu177
 
@@ -215,8 +216,8 @@ Ac227SUM = (Ac227+Th227+Fr223+Ra223+Rn219+Po215+Pb211+Bi211+Tl207+Pb207)
 
 
 daughtersdata = data.frame(times)
-daughtersdata = cbind(daughtersdata, Ac225, Fr221, At217, Bi213, Po213, Pb209, Bi209, Rn217, Tl209, SUM, SUMoverac225, Lu177, Hf177, Ac227, Th227, Fr223, Ra223, Rn219, Po215, Pb211, Bi211, Tl207, Pb207, Ac227SUM)
-colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "SUM")
+daughtersdata = cbind(daughtersdata, Ac225, Fr221, At217, Bi213, Po213, Pb209, Bi209, Rn217, Tl209, SUM, SUMalpha, Lu177, Hf177, Ac227, Th227, Fr223, Ra223, Rn219, Po215, Pb211, Bi211, Tl207, Pb207, Ac227SUM, SUMoverac225)
+colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM", "SUM alpha", "Lu-177", "Hf-177", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "SUM", "SUM / Ac-225")
 
 
 #melt this first
@@ -231,7 +232,7 @@ plottimes <- times[plotrows]
 #Ac-227 are c(1,15,16,17,18,19,20,21,22,23,24,25)
 
 #Ac-225&Lu-177/Hf-177 *****#8 is Bi-209 final product
-plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11)]#,13,14)]
+plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11,12)]#,13,14)]
 plotout = plotout[-1,] #remove first row
 
 mplotout <- melt(plotout, id="times")
@@ -291,7 +292,7 @@ plot227 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
 
 #plot both 225 and 227
 
-grid.arrange(arrangeGrob(plot225, plot227, ncol=2))
+grid.arrange(arrangeGrob(plot225, ncol=1))
 
 
 #
