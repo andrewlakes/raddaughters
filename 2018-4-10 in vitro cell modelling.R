@@ -52,12 +52,14 @@ library(GenKern)
 
   #activity in Ci/mg
 activity = c(k1 = 58, k2 = 176026.2, k3 = 1609541800, k4 = 20000, k5 = 1.3*10^13, k6 = 4613, k7 = 0, k8 = 96216216216, k9 = 410000, k10 = 110, k11 = 0,
-             k12 = 0.072, k13 = 31, k14 = 38926.9, k15 = 51.2, k16 = 13008438.4, k17 = 29461992937, k18 = 24639.1739, k19 = 416405.3549, k20 = 190584.9219, k21 = 0) 
+             k12 = 0.072, k13 = 31, k14 = 38926.9, k15 = 51.2, k16 = 13008438.4, k17 = 29461992937, k18 = 24639.1739, k19 = 416405.3549, k20 = 190584.9219, k21 = 0, k22 = 4.72718E-05, k23 = 106933068.3) 
 
 #initial activity in uCi
 uciac225 =  200/1000 #0.1 nCi = 220 CPM  ->>>> divide by #major species (5) if in transient equilibrium, don't include minor species.
 ucilu177 = 20*700/1000 
 uciac227 = 20/1000 #/8 divide by # starting @EQ (8) to get total dose equivalency, don't include minor species.
+ucipa231 = 20/1000
+
 
 #Initial nmoles of actinium-225
 #use the mol ratios #agged out to start at transient equilibiurm - but change the uciac225 starting activity accordingly as well.
@@ -69,6 +71,8 @@ uciac227 = 20/1000 #/8 divide by # starting @EQ (8) to get total dose equivalenc
 
 
 #assume Ac-225 only upon mAb metallation / washing.
+
+#uCi / (uCi/ng) / ng/nmol = nmol
 nmolesac225 = uciac225/58/225
 nmolesfr221 = 0 #3.42E-04*nmolesac225
 nmolesat217 = 0 #3.76E-08*nmolesac225
@@ -83,7 +87,8 @@ nmoleslu177 = ucilu177/110/177
 
 #divide by mole ratio if starting at EQ (200 days), otherwise create initial non-steady state mol ratio set to start halfway in or whatever
 
-nmolesac227 = uciac227/0.072/227 #uciac227/0.072/227
+nmolespa231 = ucipa231/4.72718E-05/231
+nmolesac227 = 0#uciac227/0.072/227 #uciac227/0.072/227
 nmolesth227 = 0#uciac227/31/227 #0.002323661*nmolesac227
 nmolesfr223 = 0#3.77269E-05*nmolesac227 #isn't chelated by dota
 nmolesra223 = 0#0.00144379*nmolesac227 #isn't chelated by dota
@@ -93,7 +98,7 @@ nmolespb211 = 0#3.17247E-06*nmolesac227
 nmolesbi211 = 0#1.8772E-07*nmolesac227
 nmolestl207 = 0#4.18072E-07*nmolesac227
 nmolespb207 = 0#1/100*nmolesac227
-
+nmolespo211 = 0
 
 
 
@@ -103,11 +108,12 @@ nmolespb207 = 0#1/100*nmolesac227
 dpmac225 = uciac225*2220000
 dpmlu177 = ucilu177*2220000
 dpmac227 = uciac227*2220000
+dpmpa231 = ucipa231*2220000
 
 
 #lambda values are ln(2)/t(1/2) with t1/2 in days
 parameters = c(l1 = 0.069663033, l2 = 203.7003959, l3 = 1854115.059, l4 = 21.69852043, l5 = 14259027714, l6 = 5.118625333, l7 = 8.75554E-19, l8 = 110903548.9, l9 = 461.8842851, l10 = 0.104232659, l11 = 0,
-               l12 = 8.72237E-05,l13 = 0.03710638,l14 = 46.08181,l15 = 0.060642798,l16 = 15123.21121,l17 = 33626005.84,l18 = 27.59862689,l19 = 466.4167944,l20 = 209.4275997,l21 = 0)
+               l12 = 8.72237E-05,l13 = 0.03710638,l14 = 46.08181,l15 = 0.060642798,l16 = 15123.21121,l17 = 33626005.84,l18 = 27.59862689,l19 = 466.4167944,l20 = 209.4275997,l21 = 0, l22 = 5.79681E-08, l23 = 119775.8)
 
 
 #probabilities of the destruction to a certain species
@@ -115,19 +121,19 @@ parameters = c(l1 = 0.069663033, l2 = 203.7003959, l3 = 1854115.059, l4 = 21.698
 
 #2nd row starts at #15
 probabilities = c(ac2fr = 1, fr2at = 1, at2bi = 0.99923, bi2po = 0.978, po2pb = 1, pb2bi = 1, at2rn = 0.00077, bi2tl = 0.0209, rn2po = 1, tl2pb = 1, bi2tl205 = 1, lu2hfbeta = 0.79, lu2hfgamma1 = 0.11, lu2hfgamma2 = 0.064, 
-                  ac2th227 = 0.9862, ac2fr223 = 0.0138, fr2ra223 = 1, th2ra223 = 1, ra2rn219 = 1, rn2po215 = 1, po2pb211 = 1, pb2bi211 = 1, bi2tl207 = 1, tl2pb207 = 1, pb2stable = 1 )
+                  ac2th227 = 0.9862, ac2fr223 = 0.0138, fr2ra223 = 1, th2ra223 = 1, ra2rn219 = 1, rn2po215 = 1, po2pb211 = 1, pb2bi211 = 1-0.00276, bi2tl207 = 1, tl2pb207 = 1, pb2stable = 1, pa2ac227 = 1, pb2po211 = 0.276, po2pb207 = 1, pa2ac227 = 1, bi2po211 = 0.00276)
 energies = c(eac2fr = 5.935, efr2at = 6.46, eat2bi = 7.20, ebi2po = 1.4227/3, epo2pb = 8.536, epb2bi = 0.644/3, eat2rn = 0.737/3, ebi2tl = 5.98, ern2po = 7.88, etl2pb = 3.976/3, ebi2tl205 = 3.137, elu2hfbeta = 0.497/3, elu2hfgamma1 = 0.208, elu2hfgamma2 = 0.113,
-             eac2th227 = 0.044/3, eac2fr227 = 5.04, efr2ra223 = 1.149/3, eth2ra223 = 6.1466, era2rn219 = 5.97899, ern2po215 = 6.94612, epo2pb211 = 7.52626, epb2bi211 = 1.36697/3, ebi2tl207 = 6.75033, etl2pb207 = 1.41824, epb2stable = 0)
+             eac2th227 = 0.044/3, eac2fr227 = 5.04, efr2ra223 = 1.149/3, eth2ra223 = 6.1466, era2rn219 = 5.97899, ern2po215 = 6.94612, epo2pb211 = 7.52626, epb2bi211 = 1.36697/3, ebi2tl207 = 6.75033, etl2pb207 = 1.41824, epb2stable = 0, epa2ac227 = 5.14987, epb2po211 = 0.574, epo2pb207 = 7.5945, epa2ac227 = 5.14987, ebi2po211 = 0.57409)
 checktable = data.frame(probabilities, energies)
 
 #these numbers are in nmoles
 state = c(A = nmolesac225, B = nmolesfr221, C = nmolesat217, D = nmolesbi213, E = nmolespo213, f = nmolespb209, G = nmolesbi209, H = nmolesrn217, I = nmolestl209, J = nmoleslu177, K = 0, 
-          L = nmolesac227, M = nmolesth227, N = nmolesfr223, O = nmolesra223, P = nmolesrn219, Q = nmolespo215, R = nmolespb211, S = nmolesbi211, t = nmolestl207, U = nmolespb207)
+          L = nmolesac227, M = nmolesth227, N = nmolesfr223, O = nmolesra223, P = nmolesrn219, Q = nmolespo215, R = nmolespb211, S = nmolesbi211, t = nmolestl207, U = nmolespb207, v = nmolespa231, w = nmolespo211)
 
 
 #For TLC calc
 #state = c(A = 0, B = out[out$time==0.083,"Fr221"], C = out[out$time==0.083,"At217"], D = out[out$time==0.083,"Bi213"], E = out[out$time==0.083,"Po213"], f = out[out$time==0.083,"Pb209"], G = out[out$time==0.083,"Bi209"], H = out[out$time==0.083,"Rn217"], I = out[out$time==0.083,"Tl209"],J = nmoleslu177, K = 0, L = nmolesac227, M = nmolesth227, N = nmolesfr223, O = nmolesra223, P = nmolesrn219, Q = nmolespo215, R = nmolespb211, S = nmolesbi211, t = nmolestl207, U = nmolespb207)
-masses = c('Ac225' = 225, 'Fr221' = 221, 'At217' = 217, 'Bi213' = 213, 'Po213' = 213, 'Pb209' = 209, 'Bi209' = 209, 'Rn217' = 217, 'Tl209' = 209, 'Lu177' = 177, 'Hf177' = 177, j12 = 227, j13 = 227, j14 = 223, j15 = 223, j16 = 219, j17 = 215, j18 = 211, j19 = 211, j20 = 207, j21 = 207)
+masses = c('Ac225' = 225, 'Fr221' = 221, 'At217' = 217, 'Bi213' = 213, 'Po213' = 213, 'Pb209' = 209, 'Bi209' = 209, 'Rn217' = 217, 'Tl209' = 209, 'Lu177' = 177, 'Hf177' = 177, j12 = 227, j13 = 227, j14 = 223, j15 = 223, j16 = 219, j17 = 215, j18 = 211, j19 = 211, j20 = 207, j21 = 207, j22 = 231, j23 = 211)
 
 
 #calculate nmoles of species
@@ -146,7 +152,8 @@ daughters = function(t, state, parameters, probabilities) {with(as.list(c(state,
   dJ = -l10*J
   dK = l10*J
   
-  dL = -l12*L
+  dv = -l22*v #pa231
+  dL = l22*pa2ac227*v-l12*L
   dM = l12*ac2th227*L-l13*M
   dN = l12*ac2fr223*L-l14*N
   dO = l13*th2ra223*M+l14*fr2ra223*N-l15*O
@@ -154,18 +161,20 @@ daughters = function(t, state, parameters, probabilities) {with(as.list(c(state,
   dQ = l16*rn2po215*P-l17*Q
   dR = l17*po2pb211*Q-l18*R
   dS = l18*pb2bi211*R-l19*S
+  dw = l19*bi2po211*S-l23*w
   dt = l19*bi2tl207*S-l20*t
   dU = l20*tl2pb207*t-l21*U
   
   
-  list(c(dA, dB, dC, dD, dE, df, dG, dH, dI, dJ, dK, dL, dM, dN, dO, dP, dQ, dR, dS, dt, dU))
+  
+  list(c(dA, dB, dC, dD, dE, df, dG, dH, dI, dJ, dK, dL, dM, dN, dO, dP, dQ, dR, dS, dt, dU, dv, dw))
 })}
 
 ##### Time scale #####
 #Ac-227 timefame
 #timedays = 365*21.772                                     #total days for plot
-timedays = 7946
-timestep = 0.1                                   #step size
+timedays = 100*365
+timestep = 1*365                            #step size
 timestepout = 1/timestep                           #to make a timesout match starting at 1
 
 times = seq(0, timedays, by = timestep)     #list all points
@@ -181,11 +190,17 @@ out = ode(y = state, times = times, func = daughters, parms = parameters, prob=p
 
 #head(out)
 
+#intercolate values to vastly reduce size
+plotrows = unique(round(lseq(1, length(timesout), 10000)))
+plottimes <- times[plotrows]
+
 
 #calculate activity produces over time
 #daughtersactiv = function(t, activity, masses, out) {with(as.list(c(activity, masses, out)),{
 
 #multiply to get DPM from uCi and divide by initial ac-225 DPM to get Fraction Activity Remaining
+
+#ng/ngmol * uCi/ng * days * #(counts/min)/uCi / 
 Ac225 = masses[1]*activity[1]*out[timesout,2]*2220000/dpmac225
 Fr221 = masses[2]*activity[2]*out[timesout,3]*2220000/dpmac225
 At217 = masses[3]*activity[3]*out[timesout,4]*2220000/dpmac225
@@ -197,33 +212,34 @@ Rn217 = masses[8]*activity[8]*out[timesout,9]*2220000/dpmac225
 Tl209 = masses[9]*activity[9]*out[timesout,10]*2200000/dpmac225
 SUM = (Ac225+Fr221+At217+Bi213+Po213+Pb209+Bi209+Rn217+Tl209)
 SUMoverac225 = SUM/Ac225
+
 Lu177 = masses[10]*activity[10]*out[timesout,11]*2220000/dpmlu177
 Hf177 = masses[11]*activity[11]*out[timesout,12]*2220000/dpmlu177
 
-
-Ac227 = masses[12]*activity[12]*out[timesout,13]*2220000/dpmac227
-Th227 = masses[13]*activity[13]*out[timesout,14]*2220000/dpmac227
-Fr223 = masses[14]*activity[14]*out[timesout,15]*2220000/dpmac227
-Ra223 = masses[15]*activity[15]*out[timesout,16]*2220000/dpmac227
-Rn219 = masses[16]*activity[16]*out[timesout,17]*2220000/dpmac227
-Po215 = masses[17]*activity[17]*out[timesout,18]*2220000/dpmac227
-Pb211 = masses[18]*activity[18]*out[timesout,19]*2220000/dpmac227
-Bi211 = masses[19]*activity[19]*out[timesout,20]*2220000/dpmac227
-Tl207 = masses[20]*activity[20]*out[timesout,21]*2220000/dpmac227
-Pb207 = masses[21]*activity[21]*out[timesout,22]*2220000/dpmac227
-Ac227SUM = (Ac227+Th227+Fr223+Ra223+Rn219+Po215+Pb211+Bi211+Tl207+Pb207)
+Pa231 = masses[22]*activity[22]*out[timesout,23]*2220000/dpmpa231
+Ac227 = masses[12]*activity[12]*out[timesout,13]*2220000/dpmpa231
+Th227 = masses[13]*activity[13]*out[timesout,14]*2220000/dpmpa231
+Fr223 = masses[14]*activity[14]*out[timesout,15]*2220000/dpmpa231
+Ra223 = masses[15]*activity[15]*out[timesout,16]*2220000/dpmpa231
+Rn219 = masses[16]*activity[16]*out[timesout,17]*2220000/dpmpa231
+Po215 = masses[17]*activity[17]*out[timesout,18]*2220000/dpmpa231
+Pb211 = masses[18]*activity[18]*out[timesout,19]*2220000/dpmpa231
+Bi211 = masses[19]*activity[19]*out[timesout,20]*2220000/dpmpa231
+Po211 = masses[23]*activity[23]*out[timesout,24]*2220000/dpmpa231
+Tl207 = masses[20]*activity[20]*out[timesout,21]*2220000/dpmpa231
+Pb207 = masses[21]*activity[21]*out[timesout,22]*2220000/dpmpa231
+Ac227SUM = (Pa231+Ac227+Th227+Fr223+Ra223+Rn219+Po215+Pb211+Bi211+Po211+Tl207+Pb207)
 
 
 daughtersdata = data.frame(times)
-daughtersdata = cbind(daughtersdata, Ac225, Fr221, At217, Bi213, Po213, Pb209, Bi209, Rn217, Tl209, SUM, SUMoverac225, Lu177, Hf177, Ac227, Th227, Fr223, Ra223, Rn219, Po215, Pb211, Bi211, Tl207, Pb207, Ac227SUM)
-colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "SUM")
+daughtersdata = cbind(daughtersdata, Ac225, Fr221, At217, Bi213, Po213, Pb209, Bi209, Rn217, Tl209, SUM, SUMoverac225, Lu177, Hf177, Pa231, Ac227, Th227, Fr223, Ra223, Rn219, Po215, Pb211, Bi211, Po211, Tl207, Pb207, Ac227SUM)
+colnames(daughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "SUM", "Ac-225 SUM / Ac-225", "Lu-177", "Hf-177", "Pa-231", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Po-211", "Tl-207", "Pb-207", "SUM")
 
 
 #melt this first
 #mdaughtersdata = melt(daughtersdata, id="times")
 
-plotrows = unique(round(lseq(1, length(timesout), 10000)))
-plottimes <- times[plotrows]
+
 
 
 #choose your columns: Lu-177 and Hf-177 are 13 and 14
@@ -232,17 +248,24 @@ plottimes <- times[plotrows]
 
 #Ac-225&Lu-177/Hf-177 *****#8 is Bi-209 final product
 plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11)]#,13,14)]
-plotout = plotout[-1,] #remove first row
+plotout = plotout[-1,] #remove first row up to 1 year mark
 
 mplotout <- melt(plotout, id="times")
 colnames(mplotout) <- c("times","Species","value")
 
 
-#Ac-227
-plotout2 <- daughtersdata[plotrows, c(1,15,16,17,18,19,20,21,22,23,24,25)] 
-plotout2 = plotout2[-1,] #remove first row
+#Pa231 is 15-26, Ac-227 is 16-26, 27 is SUM
 
-mplotout2 <- melt(plotout2, id="times")
+#convert to years instead of days
+plotout2 <- daughtersdata[plotrows, c(1,15,16,17,18,19,20,21,22,23,24,25,26)] 
+timesyears = plotout2[,1]/365
+plotout2 = daughtersdata[plotrows, c(15,16,17,18,19,20,21,22,23,24,25,26)]
+plotout2 = cbind(timesyears,plotout2)
+
+#plotout2 = plotout2[-c(1:731),] #remove first row
+
+
+mplotout2 <- melt(plotout2, id="timesyears")
 colnames(mplotout2) <- c("times","Species","value")
 
 #---- new section ----
@@ -270,72 +293,92 @@ plot225 = ggplot(mplotout, aes(x=times, y=value, by=Species))+
 
 
 #Plot Ac-227  
-plot227 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
+plot231 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
   scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000))+
-  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+  annotation_logticks(base = 10, sides = "bl", scaled = TRUE,
                       short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
                       colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
   
-  scale_y_continuous(labels = scales::percent, breaks=c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))+
+  scale_y_log10(breaks=c(0,0.00001,0.0001,0.001,0.01,0.1,1))+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  labs(x = "Time (day)", y = "% Activity(t) / Ac-227(0)", color="Species")+
+  labs(x = "Time (years)", y = "Fraction Activity(t) / Pa-231(0)", color="Species")+
   theme(text = element_text(size=18, face = "bold"),
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
   guides(shape=guide_legend(override.aes = list(size=3)))
 
 
+
+#plot only Pa-231
+grid.arrange(arrangeGrob(plot231, ncol=1))
+
+
+
 #plot both 225 and 227
 
-grid.arrange(arrangeGrob(plot225, plot227, ncol=2))
+grid.arrange(arrangeGrob(plot225, plot231, ncol=2))
 
 
-#
+
+
+
+
+
+
+
 
 
 
 
 #melt the masses
 #choose columns
-out = data.frame(out[plotrows, 1:10])
+out2 = data.frame(out[plotrows, c(1,13,14,15,16,17,18,19,20,21,22,23,24)])
 #out = data.frame(out[plotrows, c(1,13,14,15,16,17,18,19,20,21,22)])
 
+timesyearsmass = out2[,1]/365
 
-colnames(out) = c("time", "Ac225", "Fr221", "At217", "Bi213", "Po213", "Pb209", "Bi209", "Rn217", "Tl209")
+#convert to nmoles/year
+out2 = data.frame(out[plotrows, c(13,14,15,16,17,18,19,20,21,22,23,24)])*60*24*365
+out2 = cbind(timesyearsmass,out2)
+#out2 = out2[-c(1:731),]
+
+colnames(out2) = c("times", "Pa-231", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Po-211", "Tl-207", "Pb-207")
+#colnames(out) = c("time", "Ac225", "Fr221", "At217", "Bi213", "Po213", "Pb209", "Bi209", "Rn217", "Tl209")
 #colnames(out) = c("")
 
-mout = melt(out, id="time") 
-colnames(mout) <- c("time","Species","value")
+
+
+mout2 <- melt(out2, id="times")
+colnames(mout2) <- c("times","Species","value")
+
+
 
 #plot the masses
 
-ggplot(mout, aes(x=time, y=value, by=Species))+
+plot231mass = ggplot(mout2, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+
 
     scale_x_log10(breaks=c(0.001, 0.01, 0.1, 1, 10, 100, 1000))+
-  annotation_logticks(base = 10, sides = "b", scaled = TRUE,
+  annotation_logticks(base = 10, sides = "bl", scaled = TRUE,
                       short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
                       colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
   scale_y_log10()+#breaks=c(10^(-20), 10^(-15), 10^(-10), 10^(-5)))+ #'s are for 0.1 nmol starting
   theme_bw() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), text = element_text(size=18, face = "bold"),
+  theme(legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank(), text = element_text(size=18, face = "bold"),
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
   
-  #annotation_logticks(base = 10, sides = "l", scaled = TRUE,
-                      #short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
-                      #colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
-  labs(x = "Time (day)", y = "Amount (nmoles/min)")+
+  labs(x = "Time (years)", y = "nmoles/year")+
   theme(text = element_text(size=18))+
   guides(shape=guide_legend(override.aes = list(size=3)))
 #  guides(color=guide_legend(title=""))
 
-
+grid.arrange(arrangeGrob(plot231mass, plot231, ncol=2))
 
 
 
