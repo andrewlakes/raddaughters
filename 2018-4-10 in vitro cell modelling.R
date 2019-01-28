@@ -120,7 +120,7 @@ parameters = c(l1 = 0.069663033, l2 = 203.7003959, l3 = 1854115.059, l4 = 21.698
 #using beta 1/3 average energy rule from beta max
 
 #2nd row starts at #15
-probabilities = c(ac2fr = 1, fr2at = 1, at2bi = 0.99923, bi2po = 0.978, po2pb = 1, pb2bi = 1, at2rn = 0.00077, bi2tl = 0.0209, rn2po = 1, tl2pb = 1, bi2tl205 = 1, lu2hfbeta = 0.79, lu2hfgamma1 = 0.11, lu2hfgamma2 = 0.064, 
+probabilities = c(ac2fr = 1, fr2at = 1, at2bi = 0.99923, bi2po = 0.978, po2pb = 1, pb2bi = 1, at2rn = 0.00077, bi2tl = 0.0209, rn2po = 1, tl2pb = 1, bi2tl205 = 1, lu2hfbeta = 1, lu2hfgamma1 = 0.11, lu2hfgamma2 = 0.064, 
                   ac2th227 = 0.9862, ac2fr223 = 0.0138, fr2ra223 = 1, th2ra223 = 1, ra2rn219 = 1, rn2po215 = 1, po2pb211 = 1, pb2bi211 = 1-0.00276, bi2tl207 = 1, tl2pb207 = 1, pb2stable = 1, pa2ac227 = 1, pb2po211 = 0.276, po2pb207 = 1, pa2ac227 = 1, bi2po211 = 0.00276)
 energies = c(eac2fr = 5.935, efr2at = 6.46, eat2bi = 7.20, ebi2po = 1.4227/3, epo2pb = 8.536, epb2bi = 0.644/3, eat2rn = 0.737/3, ebi2tl = 5.98, ern2po = 7.88, etl2pb = 3.976/3, ebi2tl205 = 3.137, elu2hfbeta = 0.497/3, elu2hfgamma1 = 0.208, elu2hfgamma2 = 0.113,
              eac2th227 = 0.044/3, eac2fr227 = 5.04, efr2ra223 = 1.149/3, eth2ra223 = 6.1466, era2rn219 = 5.97899, ern2po215 = 6.94612, epo2pb211 = 7.52626, epb2bi211 = 1.36697/3, ebi2tl207 = 6.75033, etl2pb207 = 1.41824, epb2stable = 0, epa2ac227 = 5.14987, epb2po211 = 0.574, epo2pb207 = 7.5945, epa2ac227 = 5.14987, ebi2po211 = 0.57409)
@@ -313,8 +313,8 @@ plot231 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
 
 
 
-#plot only Pa-231
-grid.arrange(arrangeGrob(plot231, ncol=1))
+#plot only Ac-225
+grid.arrange(arrangeGrob(plot225, ncol=1))
 
 
 
@@ -1005,8 +1005,9 @@ colnames(mintensityplotsorder1) = c("Frequency","Species","value")
 ggplot(mintensityplotsorder, aes(x=value, y=Frequency, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))+ 
-  scale_x_log10(breaks=c(lseq(0.0025,0.0025*4^6,7)))+
-  scale_y_continuous(breaks=c(0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000))+
+ # scale_x_log10(breaks=c(lseq(0.0025,0.0025*4^6,7)))+
+  scale_x_log10(breaks=c(lseq(0.001,10,5)))+
+  scale_y_continuous(breaks=c(0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000))+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   labs(x = "Distance (mm)", y = "Frequency", color="Species")+
@@ -1542,21 +1543,21 @@ for (i in 1:nrow(vectorplots1ex)){
 
 #### !PLOTLY####
 
-# 
-# plot_ly() %>% 
-#   add_trace(data = vectorplotsLu177ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~number, color = ~number, colors = "Paired",
-#             marker = list(size = 4, showscale = TRUE),
-#             line = list(width = 1.5, color = "#000000", showscale = TRUE))%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d")%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
-# 
-# plot_ly() %>% 
-#   add_trace(data = vectorplots1ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
-#             marker = list(size = 4, showscale = TRUE),
-#             line = list(width = 1.5, color = "#000000", showscale = FALSE))%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d", showscale = FALSE)%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
-# 
+
+plot_ly() %>%
+  add_trace(data = vectorplotsLu177ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~number, color = ~number, colors = "Paired",
+            marker = list(size = 4, showscale = TRUE),
+            line = list(width = 1.5, color = "#000000", showscale = TRUE))%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d")%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
+
+plot_ly() %>%
+  add_trace(data = vectorplots1ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
+            marker = list(size = 4, showscale = TRUE),
+            line = list(width = 1.5, color = "#000000", showscale = FALSE))%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d", showscale = FALSE)%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
+
 
 
 
@@ -2015,7 +2016,7 @@ ggplot(mdEdxexintGy, aes(x=times, y=value, by=Species))+
 #check the output
 #dosenumbers = dEdxexintGy[nrow(dEdxexintGy)-1,]
 
-dosenumbers = rbind(dosenumbers,dEdxexintGy[nrow(dEdxexintGy)-1,])
+#dosenumbers = rbind(dosenumbers,dEdxexintGy[nrow(dEdxexintGy)-1,])
 
 
 
