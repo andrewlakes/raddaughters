@@ -1006,7 +1006,7 @@ ggplot(mintensityplotsorder, aes(x=value, y=Frequency, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))+ 
   scale_x_log10(breaks=c(lseq(0.0025,0.0025*4^6,7)))+
-  scale_y_continuous(breaks=c(0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000))+
+  scale_y_continuous(breaks=c(seq(0,3000,200)))+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   labs(x = "Distance (mm)", y = "Frequency", color="Species")+
@@ -1285,18 +1285,18 @@ pycirc = rhocirc*sin(phicirc)
 controlsurface = data.frame(rplottimes, pxcirc, pycirc, pzcirc, pzcirc0)
 
 # ### !PLOTLY ####
-# plot_ly() %>%
-#   add_trace(data = vectorplotsLu177, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
-#             line = list(width = 1, color = "#000000"),
-#             marker = list(size = 3, showscale = FALSE))%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d")
-# 
-# ##### geometric model figure ##### -> vectorplots$Species needs to be "numeric" for correct lines
-# plot_ly() %>%
-#   add_trace(data = vectorplots1, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
-#             marker = list(size = 3, showscale = FALSE),
-#             line = list(width = 1, color = "#000000", showscale = FALSE))%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d")
+plot_ly() %>%
+  add_trace(data = vectorplotsLu177, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
+            line = list(width = 1, color = "#000000"),
+            marker = list(size = 3, showscale = FALSE))%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d")
+
+##### geometric model figure ##### -> vectorplots$Species needs to be "numeric" for correct lines
+plot_ly() %>%
+  add_trace(data = vectorplots1, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
+            marker = list(size = 3, showscale = FALSE),
+            line = list(width = 1, color = "#000000", showscale = FALSE))%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d")
 
 
 
