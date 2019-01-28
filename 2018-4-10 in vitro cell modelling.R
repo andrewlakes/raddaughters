@@ -314,7 +314,7 @@ plot231 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
 
 
 #plot only Pa-231
-grid.arrange(arrangeGrob(plot231, ncol=1))
+grid.arrange(arrangeGrob(plot225, ncol=1))
 
 
 
@@ -1540,23 +1540,6 @@ for (i in 1:nrow(vectorplots1ex)){
 #   if (vectorplots1ex[i,5] == 0 & !is.na(vectorplots1ex[i,5])) {vectorplots1ex[i,5] = NA}
 # }
 
-#### !PLOTLY####
-
-# 
-# plot_ly() %>% 
-#   add_trace(data = vectorplotsLu177ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~number, color = ~number, colors = "Paired",
-#             marker = list(size = 4, showscale = TRUE),
-#             line = list(width = 1.5, color = "#000000", showscale = TRUE))%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d")%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
-# 
-# plot_ly() %>% 
-#   add_trace(data = vectorplots1ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
-#             marker = list(size = 4, showscale = TRUE),
-#             line = list(width = 1.5, color = "#000000", showscale = FALSE))%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d", showscale = FALSE)%>%
-#   add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
-# 
 
 
 
@@ -1733,6 +1716,23 @@ print(its-ii)
 
 }
 
+
+#### !PLOTLY####
+
+
+plot_ly() %>%
+  add_trace(data = vectorplotsLu177ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~number, color = ~number, colors = "Paired",
+            marker = list(size = 4, showscale = TRUE),
+            line = list(width = 1.5, color = "#000000", showscale = TRUE))%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d")%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
+
+plot_ly() %>%
+  add_trace(data = vectorplots1ex, x = ~px, y = ~py, z = ~pz, type = 'scatter3d', mode = 'lines+markers', name = ~Species, color = ~Species, colors = "Paired",
+            marker = list(size = 4, showscale = TRUE),
+            line = list(width = 1.5, color = "#000000", showscale = FALSE))%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc0, type="mesh3d", showscale = FALSE)%>%
+  add_trace(data = controlsurface, x = controlsurface$pxcirc, y = controlsurface$pycirc, z = controlsurface$pzcirc, type="mesh3d", showscale = FALSE)
 
 
 
