@@ -173,8 +173,8 @@ daughters = function(t, state, parameters, probabilities) {with(as.list(c(state,
 ##### Time scale #####
 #Ac-227 timefame
 #timedays = 365*21.772                                     #total days for plot
-timedays = 100*365
-timestep = 1*365                            #step size
+timedays = 40
+timestep = 0.01                            #step size
 timestepout = 1/timestep                           #to make a timesout match starting at 1
 
 times = seq(0, timedays, by = timestep)     #list all points
