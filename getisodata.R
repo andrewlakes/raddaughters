@@ -4,6 +4,16 @@ library(plyr)
 data("periodicTable")
 
 
+download.file('http://www.data-explorer.com/content/data/periodic-table-of-elements-csv.zip', 
+              destfile = 'isotopes/periodicTable.zip')
+
+
+#### URL for source http://www.oecd-nea.org/dbdata/jeff/jeff33/
+
+
+
+
+
 Isotopes <- list()
 
 isofile <- 'isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
@@ -12,7 +22,7 @@ isofile <- 'isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '227TH' # input the parent isotope! 
+iso <- '225AC' # input the parent isotope! 
 branchThreshold <- 0.0001 # input the branch percentage threshold for abandoning a branch
 
 # start making the new isotope in the addIso list
@@ -110,9 +120,11 @@ Isotopes[[length(Isotopes)+1]] <- addIso
 names(Isotopes)[length(Isotopes)] <- iso
 
 
+
+
 #---- Starting to add daughter isotopes ----
 
-dk_levs <- 9 # choose the number of levels of the decay chain to follow
+dk_levs <- 100 # choose the number of levels of the decay chain to follow
 
 declevs <- array()
 
@@ -243,3 +255,17 @@ for (i in seq(dk_levs)) {
 
 
 Isotopes$`213BI`$Decays$Beta$daughter
+
+
+
+#Create graphic diagram of decay chain
+
+#Show isotope, decay mode, half-life, energy, and percentage
+
+#grab current data (choose 225AC)
+Isotopesdiagramformat = list()
+
+####drawing practice####
+
+
+
