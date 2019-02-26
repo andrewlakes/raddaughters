@@ -1099,15 +1099,8 @@ pz1 = do.call(cbind, replicate(11, pz, simplify=FALSE))
 
 #Create unique trajectories for all destructions, but starting at the same initial antibody point
 
-theta = data.frame(matrix(NA, ncol = 11, nrow = length(rplottimes)))
-Phi = data.frame(matrix(NA, ncol = 11, nrow = length(rplottimes)))
-
-for (j in 1:11){
-  for (i in 1:length(rplottimes)){
-  theta[i,j] = data.frame(cbind(runif(1, 0, 2*pi))) #theta is for random vertical trajectory of destruction
-  Phi[i,j] = data.frame(cbind(runif(1, 0, 2*pi)))
-}
-}
+theta = data.frame(replicate(11, sample(0:31415926, length(rplottimes), replace = TRUE)/10000000))
+Phi = replicate(11, sample(0:31415926, length(rplottimes), replace = TRUE)/10000000)
 
 
 # pc = cellheight/cos(theta) #->>pc is the path length of particle interacting through cells
@@ -1132,12 +1125,11 @@ Py = data.frame(matrix(NA,ncol = 11, nrow = length(rplottimes)))
 Pz = data.frame(matrix(NA,ncol = 11, nrow = length(rplottimes)))
 
 #rplotoutdistances at columns [2:12] to create unique output vector positions
-for (i in 1:length(rplottimes)){
+
   for (j in 1:11){
-    Px[i,j] = data.frame(cbind(px[i] + sin(theta[i,j])*(rplotoutdistances[i,j+1])*cos(Phi[i,j])))
-    Py[i,j] = data.frame(cbind(py[i] + sin(theta[i,j])*(rplotoutdistances[i,j+1])*sin(Phi[i,j])))
-    Pz[i,j] = data.frame(cbind(pz[i] + sin(theta[i,j])*(rplotoutdistances[i,j+1])/tan(theta[i,j])))
-}
+    Px[,j] = px + sin(theta[,j]) * rplotoutdistances[,j+1] * cos(Phi[,j])
+    Py[,j] = py + sin(theta[,j]) * rplotoutdistances[,j+1] * sin(Phi[,j])
+    Pz[,j] = pz + sin(theta[,j]) * rplotoutdistances[,j+1] / tan(theta[,j])
 }
 
 
@@ -1161,11 +1153,12 @@ vectorplotiLu177 = data.frame(matrix(NA, nrow = length(rplottimes), ncol = 3))
 vectorplotfLu177 = data.frame(matrix(NA, nrow = length(rplottimes), ncol = 3))
 
 for (j in 1:3){
+  pb = txtProgressBar(min = 1, max = length(plottimes), style = 3)
   for (i in 1:(length(plottimes))){
 vectorplotiLu177[i,j] = cbind(positions[i,1,j])
 vectorplotfLu177[i,j] = rbind(vectors[i,11,j])
 #vectorplotAc225[i+2,j] = rbind(NA)
-
+  setTxtProgressBar(pb, i)
 }
 }
 vectorplotiLu177 = cbind(times=rplottimes,vectorplotiLu177,X4=0)
