@@ -69,7 +69,7 @@ uciac227 = 20/1000 #/8 divide by # starting @EQ (8) to get total dose equivalenc
 
 
 #assume Ac-225 only upon mAb metallation / washing.
-nmolesac225 = uciac225/58/225
+nmolesac225 = uciac225/58.323/225
 nmolesfr221 = 0 #3.42E-04*nmolesac225
 nmolesat217 = 0 #3.76E-08*nmolesac225
 nmolesbi213 = 0 #3.22E-03*nmolesac225
@@ -79,7 +79,7 @@ nmolesbi209 = 0 #1/10*nmolesac225 #starting with 1 day equilibrium
 nmolesrn217 = 0 #4.84E-13*nmolesac225
 nmolestl209 = 0 #3.16E-06*nmolesac225
 
-nmoleslu177 = ucilu177/110/177
+nmoleslu177 = ucilu177/110.6/177
 
 #divide by mole ratio if starting at EQ (200 days), otherwise create initial non-steady state mol ratio set to start halfway in or whatever
 
@@ -164,7 +164,7 @@ daughters = function(t, state, parameters, probabilities) {with(as.list(c(state,
 ##### Time scale #####
 #Ac-227 timefame
 #timedays = 365*21.772                                     #total days for plot
-timedays = 40
+timedays = 20
 timestep = 0.01                                   #step size
 timestepout = 1/timestep                           #to make a timesout match starting at 1
 
@@ -232,7 +232,7 @@ plottimes <- times[plotrows]
 #Ac-227 are c(1,15,16,17,18,19,20,21,22,23,24,25)
 
 #Ac-225&Lu-177/Hf-177 *****#8 is Bi-209 final product
-plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11,12)]#,13,14)]
+plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11,12,13,14)]#,13,14)]
 plotout = plotout[-1,] #remove first row
 
 mplotout <- melt(plotout, id="times")
@@ -262,7 +262,7 @@ plot225 = ggplot(mplotout, aes(x=times, y=value, by=Species))+
   scale_y_continuous(labels = scales::percent, breaks=c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  labs(x = "Time (day)", y = "% Activity(t) / Ac-225(0)", color="Species")+
+  labs(x = "Time (day)", y = "% Activity[x](t) / Activity[Ac,Lu](0)", color="Species")+
   theme(text = element_text(size=18, face = "bold"),
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
