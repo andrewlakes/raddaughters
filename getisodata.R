@@ -324,6 +324,3 @@ plot_ly() %>%
             line = list(width = 1, color = "#000000"),
             marker = list(size = 3, showscale = FALSE))
 
-kjh
-
-
