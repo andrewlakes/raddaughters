@@ -6,14 +6,10 @@ library(plotly)
 data("periodicTable")
 
 
-download.file('http://www.data-explorer.com/content/data/periodic-table-of-elements-csv.zip', 
-              destfile = 'isotopes/periodicTable.zip')
-
+# download.file('http://www.data-explorer.com/content/data/periodic-table-of-elements-csv.zip', 
+#               destfile = 'isotopes/periodicTable.zip')
 
 #### URL for source http://www.oecd-nea.org/dbdata/jeff/jeff33/
-
-
-
 
 
 Isotopes <- list()
@@ -24,7 +20,7 @@ isofile <- 'isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '225AC' # input the parent isotope! 
+iso <- '227AC' # input the parent isotope! 
 branchThreshold <- 0.0001 # input the branch percentage threshold for abandoning a branch
 
 # start making the new isotope in the addIso list
@@ -57,6 +53,9 @@ if (hfl[4] == 'Y'){
 }
 
 addIso$t12 <- t12
+
+# add the specific activity in mCi / ug
+addIso$SA <- (log(2)/(addIso$t12*24*60)) * (6.02214076E23 / addIso$A / 1E6 / 2.22E9)
 
 # check for which lines match the decay information for the isotope of interest
 linematches <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)
@@ -180,8 +179,10 @@ for (i in seq(dk_levs)) {
       } else if (hfl[4] == 'MS') {
         t12 <- as.numeric(hfl[3])/24/60/60/1000
       }
-      
       addIso$t12 <- t12
+      
+      # add the specific activity in mCi / ug
+      addIso$SA <- (log(2)/(addIso$t12*24*60)) * (6.02214076E23 / addIso$A / 1E6 / 2.22E9)
       
       linematches <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)
       # ndk_line <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)[1]+1
@@ -243,6 +244,8 @@ for (i in seq(dk_levs)) {
         if (any(match(names(Isotopes),addIso$isotope), na.rm = TRUE)) {
           Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield <- 
             Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield + addIso$masterYield
+          Isotopes[[length(Isotopes)+1]] <- addIso
+          names(Isotopes)[length(Isotopes)] <- paste(iso, dk, sep = '_')
         } else {
           Isotopes[[length(Isotopes)+1]] <- addIso
           names(Isotopes)[length(Isotopes)] <- iso
