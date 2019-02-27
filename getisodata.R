@@ -290,40 +290,14 @@ Isotopesunlist = unlist(Isotopes)
 #line data for diamond (4 lines)
 
 diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
+diamondjoe2 = data.frame("x" = c(1,1,0,1,2,1,0), "y" = c(0,-1,-2,-1,-2,-3,-2))
 
 plot_ly() %>%
   add_trace(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
             line = list(width = 1, color = "#000000"),
-            marker = list(size = 3, showscale = FALSE))
-  
-#data for a pie chart
-#Show main isotope in pie, hover over to get half life etc.
-
-
-
-circlejoe = data.frame("Details" = c("Isotope", "half life"), "Percentages" = c(1, 10))
-
-plot_ly() %>%
-  add_trace(data = circlejoe, labels = ~Details, values = ~Percentages, type = 'pie',
-            textinfo = 'label')
-
-
-plot_ly() %>%
-  add_trace(data = Isotopes, labels = ~Isotopes$`225AC`, values = ~Isotopes$`225AC`$t12, type = 'pie',
-            textinfo = 'label')%>%
-  add_trace(data = Isotopes, labels = ~Isotopes$`221FR`, values = ~Isotopes$`221FR`$t12, type = 'pie',
-          textinfo = 'label')
-
-
-#add_lines(p, x = NULL, y = NULL, z = NULL, ..., data = NULL, inherit = TRUE)
-#add_ribbons(p, x = NULL, ymin = NULL, ymax = NULL, ..., data = NULL, inherit = TRUE)
-#add_surface(p, z = NULL, ..., data = NULL, inherit = TRUE)
-
-
-diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
-
-plot_ly() %>%
-  add_surface(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
+            marker = list(size = 3, showscale = FALSE))%>%
+  add_trace(data = diamondjoe2, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
             line = list(width = 1, color = "#000000"),
             marker = list(size = 3, showscale = FALSE))
+  
 
