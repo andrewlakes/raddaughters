@@ -52,6 +52,9 @@ if (hfl[4] == 'Y'){
 
 addIso$t12 <- t12
 
+# add the specific activity in mCi / ug
+addIso$SA <- (log(2)/(addIso$t12*24*60)) * (6.02214076E23 / addIso$A / 1E6 / 2.22E9)
+
 # check for which lines match the decay information for the isotope of interest
 linematches <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)
 
@@ -174,8 +177,10 @@ for (i in seq(dk_levs)) {
       } else if (hfl[4] == 'MS') {
         t12 <- as.numeric(hfl[3])/24/60/60/1000
       }
-      
       addIso$t12 <- t12
+      
+      # add the specific activity in mCi / ug
+      addIso$SA <- (log(2)/(addIso$t12*24*60)) * (6.02214076E23 / addIso$A / 1E6 / 2.22E9)
       
       linematches <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)
       # ndk_line <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)[1]+1

@@ -8,6 +8,7 @@ Each isotope contains the following named variables, and can be called using the
 - **symb:** Element symbol
 - **masterYield:** The (fractional) quantity of the isotope relative to the initial isotope
 - **t12:** The isotope's half-life in units of days
+- **SA** The isotope's specific activity in units of mCi / ug
 
 **Decays:** A list with length corresponding to the number of decay branches originating from the isotope. The names of the list items within **Decays** identifies the nature of the decay as sourced from the JEFF data file. Current possibilities are:
 - **Alpha**
