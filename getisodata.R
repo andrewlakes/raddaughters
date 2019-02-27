@@ -1,6 +1,8 @@
 library(stringr)
 library(PeriodicTable)
 library(plyr)
+library(ggplot2)
+library(plotly)
 data("periodicTable")
 
 
@@ -260,12 +262,66 @@ Isotopes$`213BI`$Decays$Beta$daughter
 
 #Create graphic diagram of decay chain
 
-#Show isotope, decay mode, half-life, energy, and percentage
+#Show in box: isotope, decay mode, half-life, 
+#Show near decay line: energy, and percentage
 
-#grab current data (choose 225AC)
-Isotopesdiagramformat = list()
+
+
+#make a list practice:
+
+practice = list(c('color', "things", "n stuff"), list(1,2,3), matrix(1:6, nrow=2, ncol=3))
+names(practice) = c("1st thing", "second thing", "third thing")
+names(practice[[2]]) = c("1", "2", "3")
+
+
 
 ####drawing practice####
 
+
+Isotopesunlist = unlist(Isotopes)
+
+
+
+#Test make a line
+
+#line data for diamond (4 lines)
+
+diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
+
+plot_ly() %>%
+  add_trace(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
+            line = list(width = 1, color = "#000000"),
+            marker = list(size = 3, showscale = FALSE))
+  
+#data for a pie chart
+#Show main isotope in pie, hover over to get half life etc.
+
+
+
+circlejoe = data.frame("Details" = c("Isotope", "half life"), "Percentages" = c(1, 10))
+
+plot_ly() %>%
+  add_trace(data = circlejoe, labels = ~Details, values = ~Percentages, type = 'pie',
+            textinfo = 'label')
+
+
+plot_ly() %>%
+  add_trace(data = Isotopes, labels = ~Isotopes$`225AC`, values = ~Isotopes$`225AC`$t12, type = 'pie',
+            textinfo = 'label')%>%
+  add_trace(data = Isotopes, labels = ~Isotopes$`221FR`, values = ~Isotopes$`221FR`$t12, type = 'pie',
+          textinfo = 'label')
+
+
+#add_lines(p, x = NULL, y = NULL, z = NULL, ..., data = NULL, inherit = TRUE)
+#add_ribbons(p, x = NULL, ymin = NULL, ymax = NULL, ..., data = NULL, inherit = TRUE)
+#add_surface(p, z = NULL, ..., data = NULL, inherit = TRUE)
+
+
+diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
+
+plot_ly() %>%
+  add_surface(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
+            line = list(width = 1, color = "#000000"),
+            marker = list(size = 3, showscale = FALSE))
 
 
