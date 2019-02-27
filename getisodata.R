@@ -4,14 +4,10 @@ library(plyr)
 data("periodicTable")
 
 
-download.file('http://www.data-explorer.com/content/data/periodic-table-of-elements-csv.zip', 
-              destfile = 'isotopes/periodicTable.zip')
-
+# download.file('http://www.data-explorer.com/content/data/periodic-table-of-elements-csv.zip', 
+#               destfile = 'isotopes/periodicTable.zip')
 
 #### URL for source http://www.oecd-nea.org/dbdata/jeff/jeff33/
-
-
-
 
 
 Isotopes <- list()
@@ -22,7 +18,7 @@ isofile <- 'isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '225AC' # input the parent isotope! 
+iso <- '227AC' # input the parent isotope! 
 branchThreshold <- 0.0001 # input the branch percentage threshold for abandoning a branch
 
 # start making the new isotope in the addIso list
@@ -241,6 +237,8 @@ for (i in seq(dk_levs)) {
         if (any(match(names(Isotopes),addIso$isotope), na.rm = TRUE)) {
           Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield <- 
             Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield + addIso$masterYield
+          Isotopes[[length(Isotopes)+1]] <- addIso
+          names(Isotopes)[length(Isotopes)] <- paste(iso, dk, sep = '_')
         } else {
           Isotopes[[length(Isotopes)+1]] <- addIso
           names(Isotopes)[length(Isotopes)] <- iso
