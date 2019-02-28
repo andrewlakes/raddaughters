@@ -282,53 +282,27 @@ names(practice[[2]]) = c("1", "2", "3")
 
 
 
-####drawing practice####
-#Test make a line
-
-#line data for diamond (4 lines)
-
-#diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
-#diamondjoe2 = data.frame("x" = c(1,1,0,1,2,1,0), "y" = c(0,-1,-2,-1,-2,-3,-2))
-#
-#plot_ly() %>%
-#  add_trace(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
-#            line = list(width = 1, color = "#000000"),
-#            marker = list(size = 3, showscale = FALSE))%>%
-#  add_trace(data = diamondjoe2, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
-#            line = list(width = 1, color = "#000000"),
-#            marker = list(size = 3, showscale = FALSE))
-#
-  
+#####DiagrammeR practice#####
 
 
-#####DiagrammeR#####
-
-vector = c(1,2,3)
-
-grViz("
+B = "
 digraph Isotopes {
-      
-      
-      graph [overlap = true, fontsize = 10]
-      
-      
-      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,fillcolor = '#DDFFEB', fontname = Helvetica]
-      A [label = '@@1']; B; C; D; E; F
-      
-      node [shape = circle, fixedsize = true, width = 0.9, penwidth = 2.0,]
-      1; 2; 3; 4; 5; 6; 7; 8
-      
-      edge[color=black]
-      A->1 B->2 B->3 B->4 C->A
-      1->D E->A 2->4 1->5 1->F
-      E->6 4->6 5->7 6->7 3->8
-      C->B
+
+
+graph [overlap = true, fontsize = 10]
+
+
+node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
+fillcolor = '#DDFFEB', fontname = Helvetica]
+A; B; C; D; E; F
+
+edge[color=black]
+A->B B->C C->D D->E E->F
+
 }
 
-[1]: 'top'
-      ")
-
-
+"
+grViz(B)
 
 A = "
 digraph Isotopes {
@@ -337,7 +311,8 @@ digraph Isotopes {
       graph [overlap = true, fontsize = 10]
       
       
-      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,fillcolor = '#DDFFEB', fontname = Helvetica]
+      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
+            fillcolor = '#DDFFEB', fontname = Helvetica]
       A [label = '@@1']; B; C; D; E; F
       
       node [shape = circle, fixedsize = true, width = 0.9, penwidth = 2.0,]
@@ -355,10 +330,68 @@ digraph Isotopes {
 grViz(A)
 
 
-#example creating a bunch of text
+#Using Ac227 Isotopes list:
+
+#These can be combined later
+#sequence is
+#   preamble
+#   nodes
+#   amble
+#   edges
 
 
 
+#                                                   Start
+
+#annoying things:
+apostrophe = "'"
+openbracket = "["
+closebracket = "]"
+colon = ":"
+
+#preamble:
+
+preamble = "digraph { graph [overlap = true, fontsize = 10]
+                      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
+                            fillcolor = '#DDFFEB', fontname = Helvetica]
+                            "
+
+#insert nodes -> e.g. isotopes
+#pull from Isotopes
+
+nodes = NA
+
+for (n in 1:length(Isotopes)){
+  nodes[n] = rbind(Isotopes[[n]]$isotope)
+}
+
+#add apostrophe's to nodes
+nodes = paste(apostrophe,nodes,apostrophe)
+
+#add in bracket numbers for calling [#]
+brackets = NA
+for (n in 1:length(Isotopes)){
+  brackets[n] = paste(openbracket,rbind(n),closebracket,colon)
+  
+}
+
+
+#add in ";" after each isotope
+semicolon = ";"
+nodes = paste(nodes,semicolon)
+nodes = paste(nodes,collapse="")
+
+#amble
+
+amble = "edge[color=black]
+          "
+edges = "227AC->223FR"
+
+curlyclose = "}"
+  
+IsotopeDiagram = paste(preamble,nodes,amble,edges,curlyclose)
+grViz(IsotopeDiagram)
 
 
 
+"digraph { graph [overlap = true, fontsize = 10]\n      \n                      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,\n                            fillcolor = '#DDFFEB', fontname = Helvetica]\n                             227AC ;223FR ;227TH ;223RA ;223RA ;219RN ;219RN ;215PO ;211PB ;211BI ;207TL ;211PO ; edge[color=black]\n           227AC->223FR }"
