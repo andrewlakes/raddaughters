@@ -3,6 +3,10 @@ library(PeriodicTable)
 library(plyr)
 library(ggplot2)
 library(plotly)
+library(Scale)
+library(DiagrammeR)
+
+
 data("periodicTable")
 
 
@@ -279,25 +283,82 @@ names(practice[[2]]) = c("1", "2", "3")
 
 
 ####drawing practice####
-
-
-Isotopesunlist = unlist(Isotopes)
-
-
-
 #Test make a line
 
 #line data for diamond (4 lines)
 
-diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
-diamondjoe2 = data.frame("x" = c(1,1,0,1,2,1,0), "y" = c(0,-1,-2,-1,-2,-3,-2))
-
-plot_ly() %>%
-  add_trace(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
-            line = list(width = 1, color = "#000000"),
-            marker = list(size = 3, showscale = FALSE))%>%
-  add_trace(data = diamondjoe2, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
-            line = list(width = 1, color = "#000000"),
-            marker = list(size = 3, showscale = FALSE))
+#diamondjoe = data.frame("x" = c(0,1,2,1,0), "y" = c(1,0,1,2,1))
+#diamondjoe2 = data.frame("x" = c(1,1,0,1,2,1,0), "y" = c(0,-1,-2,-1,-2,-3,-2))
+#
+#plot_ly() %>%
+#  add_trace(data = diamondjoe, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
+#            line = list(width = 1, color = "#000000"),
+#            marker = list(size = 3, showscale = FALSE))%>%
+#  add_trace(data = diamondjoe2, x = ~x, y = ~y, type = 'scatter', mode = 'lines', name = ~diamondjoe, color = ~diamondjoe, colors = "Paired",
+#            line = list(width = 1, color = "#000000"),
+#            marker = list(size = 3, showscale = FALSE))
+#
   
+
+
+#####DiagrammeR#####
+
+vector = c(1,2,3)
+
+grViz("
+digraph Isotopes {
+      
+      
+      graph [overlap = true, fontsize = 10]
+      
+      
+      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,fillcolor = '#DDFFEB', fontname = Helvetica]
+      A [label = '@@1']; B; C; D; E; F
+      
+      node [shape = circle, fixedsize = true, width = 0.9, penwidth = 2.0,]
+      1; 2; 3; 4; 5; 6; 7; 8
+      
+      edge[color=black]
+      A->1 B->2 B->3 B->4 C->A
+      1->D E->A 2->4 1->5 1->F
+      E->6 4->6 5->7 6->7 3->8
+      C->B
+}
+
+[1]: 'top'
+      ")
+
+
+
+A = "
+digraph Isotopes {
+      
+      
+      graph [overlap = true, fontsize = 10]
+      
+      
+      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,fillcolor = '#DDFFEB', fontname = Helvetica]
+      A [label = '@@1']; B; C; D; E; F
+      
+      node [shape = circle, fixedsize = true, width = 0.9, penwidth = 2.0,]
+      1; 2; 3; 4; 5; 6; 7; 8
+      
+      edge[color=black]
+      A->1 B->2 B->3 B->4 C->A
+      1->D E->A 2->4 1->5 1->F
+      E->6 4->6 5->7 6->7 3->8
+      C->B
+      }
+      
+      [1]: 'top'
+      "
+grViz(A)
+
+
+#example creating a bunch of text
+
+
+
+
+
 
