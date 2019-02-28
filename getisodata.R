@@ -385,7 +385,7 @@ semicolon = ";"
 atat = "@@"
 curlyclose = "}"
 slashn = "\n"
-
+arrow = "->"
 
 #preamble:
 preamble = "digraph { graph [overlap = true, fontsize = 10]
@@ -393,10 +393,41 @@ preamble = "digraph { graph [overlap = true, fontsize = 10]
                             fillcolor = '#DDFFEB', fontname = Helvetica]
                             "
 
+
+#Edges first to determine all nodes
+
+IsotopesTerm = NA
+for (n in 1:length(Isotopes)){
+#1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
+    if ((length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+      & 
+      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+      &
+      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+      &
+      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+      &
+      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)) 
+            {IsotopesTerm[n] = names(Isotopes[n])}
+}
+
+#Find what the final isotope is from those found:
+
+IsotopesTerminal = NA
+for (n in which(!is.na(IsotopesTerm) )){
+  IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
+}
+
+#clean the final isotope list
+IsotopesTerminal = na.omit(unique(IsotopesTerminal))
+
+
+
+
 #insert nodes -> e.g. isotopes
 nodes = NA
 
-for (n in 1:length(Isotopes)){
+for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
   nodes[n] = rbind(paste(atat,n))
 }
 
@@ -405,7 +436,7 @@ for (n in 1:length(Isotopes)){
 #syntax
 nodewords = "[label = '"
 
-for (n in 1:length(Isotopes)){
+for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
   nodes[n] = rbind(paste(n,nodewords,nodes[n],apostrophe,closebracket))
 }
 
@@ -418,10 +449,17 @@ nodes = paste(nodes,collapse=" ")
 
 
 #set up names - pull from Isotopes master list
+#nodesnames = names(Isotopes)
+
 nodesnames = NA
 
-for (n in 1:length(Isotopes)){
-  nodesnames[n] = rbind(Isotopes[[n]]$isotope)
+for (n in 1:(length(Isotopes))){
+  nodesnames[n] = rbind(paste(Isotopes[[n]]$A,Isotopes[[n]]$symb))
+}
+
+#add in terminal isotopes
+for (n in 1:(length(IsotopesTerminal))){
+  nodesnames[length(Isotopes)+n] = rbind(IsotopesTerminal[n])
 }
 
 #add apostrophe's and \n to nodes
@@ -433,7 +471,7 @@ nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
 
 #add in bracket numbers for calling [#]
 brackets = NA
-for (n in 1:length(Isotopes)){
+for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
   brackets[n] = paste(openbracket,rbind(n),closebracket,colon)
   
 }
@@ -453,7 +491,20 @@ amble = "edge[color=black]"
 #edges
 edges = "1->2 2->8 4->12"
 
-  
+
+
+
+
+
+
+#2) if alpha is present continue
+#3) find $daughter string, and find which Isotopes[#] it is 
+#4) output #-># into a vector
+#5) if beta is present, continue
+#6) find $daughter string, and find which Isotopes[#] it is 
+#7) output #-># into a vector
+#8) win
+
 
 
 IsotopeDiagram = paste(preamble,nodes,amble,edges,slashn,curlyclose,slashn,nodesnames)
