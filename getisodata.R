@@ -358,11 +358,12 @@ digraph Isotopes {
 grViz(A)
 
 
-#Using Ac227 Isotopes list:
 
-#These can be combined later
+
+
 #sequence is
 #   preamble
+#   TerminalIsotopes
 #   nodes
 #   amble
 #   edges
@@ -370,6 +371,7 @@ grViz(A)
 
 #  @@# calls at the bottom after curly bracket corresponding number
 #       for subsets of same number, use e.g. @@1-1, @@1-2, @@2, @@3
+#       corresponds to [1] \n [2] \n [3]
 
 
 
@@ -394,8 +396,7 @@ preamble = "digraph { graph [overlap = true, fontsize = 10]
                             "
 
 
-#Edges first to determine all nodes
-
+#edges first to determine ALL nodes
 IsotopesTerm = NA
 for (n in 1:length(Isotopes)){
 #1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
@@ -412,7 +413,6 @@ for (n in 1:length(Isotopes)){
 }
 
 #Find what the final isotope is from those found:
-
 IsotopesTerminal = NA
 for (n in which(!is.na(IsotopesTerm) )){
   IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
