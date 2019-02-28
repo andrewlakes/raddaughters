@@ -294,15 +294,43 @@ graph [overlap = true, fontsize = 10]
 
 node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
 fillcolor = '#DDFFEB', fontname = Helvetica]
-A; B; C; D; E; F
+1[label='@@1'] 2[label='@@2'] 3[label='@@3'] 4[label='@@4'] 5[label='@@5'] 6[label='@@6'] 7[label='@@7'] 8[label='@@8'] 9[label='@@9'] 10[label='@@10'] 11[label='@@11'] 12[label='@@12']
 
 edge[color=black]
-A->B B->C C->D D->E E->F
+1->2 2->3 3->4 4->5 5->6
 
 }
+[1]:'ac'
+[2]:'th'
+[3]:'th'
+[4]:'th'
+[5]:'th'
+[6]:'6'
+[7]:'7'
+[8]:'8'
+[9]:'9'
+[10]:'10'
+[11]:'11'
+[12]:'12'
 
 "
 grViz(B)
+
+B = "digraph { graph [overlap = true, fontsize = 10]                      
+node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50, fillcolor = '#DDFFEB', fontname = Helvetica]
+1[label='@@1'] 2[label='@@2'] 3[label='@@3'] 4[label='@@4'] 5[label='@@5'] 6[label='@@6'] 7[label='@@7'] 8[label='@@8'] 9[label='@@9']
+edge[color=black] 1->2 
+} 
+[1]: '227AC' \n [2]: '223FR' \n [3]: '227TH' \n [4]: '223RA' \n [5]: '223RA' \n [6]: '219RN' \n [7]: '219RN' \n [8]: '215PO' \n [9]: '211PB' "
+
+
+
+
+
+
+
+
+
 
 A = "
 digraph Isotopes {
@@ -338,35 +366,70 @@ grViz(A)
 #   nodes
 #   amble
 #   edges
+#   nodesnames
+
+#  @@# calls at the bottom after curly bracket corresponding number
+#       for subsets of same number, use e.g. @@1-1, @@1-2, @@2, @@3
+
 
 
 
 #                                                   Start
 
-#annoying things:
+#word soup:
 apostrophe = "'"
 openbracket = "["
 closebracket = "]"
 colon = ":"
+semicolon = ";"
+atat = "@@"
+curlyclose = "}"
+slashn = "\n"
+
 
 #preamble:
-
 preamble = "digraph { graph [overlap = true, fontsize = 10]
                       node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
                             fillcolor = '#DDFFEB', fontname = Helvetica]
                             "
 
 #insert nodes -> e.g. isotopes
-#pull from Isotopes
-
 nodes = NA
 
 for (n in 1:length(Isotopes)){
-  nodes[n] = rbind(Isotopes[[n]]$isotope)
+  nodes[n] = rbind(paste(atat,n))
 }
 
-#add apostrophe's to nodes
-nodes = paste(apostrophe,nodes,apostrophe)
+
+#add letters for nodes and make @@ as a label
+#syntax
+nodewords = "[label = '"
+
+for (n in 1:length(Isotopes)){
+  nodes[n] = rbind(paste(n,nodewords,nodes[n],apostrophe,closebracket))
+}
+
+#remove spaces
+nodes = str_replace_all(string=nodes, pattern=" ", repl="")
+
+#collapse vectors to single strings
+nodes = paste(nodes,collapse=" ")
+
+
+
+#set up names - pull from Isotopes master list
+nodesnames = NA
+
+for (n in 1:length(Isotopes)){
+  nodesnames[n] = rbind(Isotopes[[n]]$isotope)
+}
+
+#add apostrophe's and \n to nodes
+nodesnames = paste(apostrophe,nodesnames,apostrophe,slashn)
+
+#remove spaces
+nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
+
 
 #add in bracket numbers for calling [#]
 brackets = NA
@@ -375,23 +438,23 @@ for (n in 1:length(Isotopes)){
   
 }
 
+#remove spaces
+brackets = str_replace_all(string=brackets, pattern=" ", repl="")
 
-#add in ";" after each isotope
-semicolon = ";"
-nodes = paste(nodes,semicolon)
-nodes = paste(nodes,collapse="")
+#combine brackets and nodes names
+nodesnames = paste(brackets,nodesnames)
+
+#collapse vectors to single strings
+nodesnames = paste(nodesnames,collapse=" ")
 
 #amble
+amble = "edge[color=black]"
 
-amble = "edge[color=black]
-          "
-edges = "227AC->223FR"
+#edges
+edges = "1->2 2->8 4->12"
 
-curlyclose = "}"
   
-IsotopeDiagram = paste(preamble,nodes,amble,edges,curlyclose)
+
+
+IsotopeDiagram = paste(preamble,nodes,amble,edges,slashn,curlyclose,slashn,nodesnames)
 grViz(IsotopeDiagram)
-
-
-
-"digraph { graph [overlap = true, fontsize = 10]\n      \n                      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,\n                            fillcolor = '#DDFFEB', fontname = Helvetica]\n                             227AC ;223FR ;227TH ;223RA ;223RA ;219RN ;219RN ;215PO ;211PB ;211BI ;207TL ;211PO ; edge[color=black]\n           227AC->223FR }"
