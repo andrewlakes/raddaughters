@@ -124,7 +124,7 @@ server <- function(input, output) {
    
    output$Iso <- renderText({
      
-     decayChain <- readRDS('~/Desktop/227AC')
+     decayChain <- readRDS('decayLists/227AC')
      
      decayChain[[1]]$t12
      

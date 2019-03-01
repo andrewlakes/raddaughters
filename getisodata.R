@@ -15,10 +15,11 @@ data("periodicTable")
 
 #### URL for source http://www.oecd-nea.org/dbdata/jeff/jeff33/
 
+setwd('./')
 
 Isotopes <- list()
 
-isofile <- 'isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
+isofile <- '~/Projects/Rad_daughters/isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
 
 # custom function for splitting lines at whitespaces and unlisting
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
@@ -40,7 +41,7 @@ addIso$Z = periodicTable$numb[
 addIso$masterYield <- 1
 
 # get the half-life data, check for units and convert to days 
-hfl <- linesplit(grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = TRUE)[1])
+hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
 
 if (hfl[4] == 'Y'){
   t12 <- as.numeric(hfl[3])*365
@@ -62,7 +63,7 @@ addIso$t12 <- t12
 addIso$SA <- (log(2)/(addIso$t12*24*60)) * (6.02214076E23 / addIso$A / 1E6 / 2.22E9)
 
 # check for which lines match the decay information for the isotope of interest
-linematches <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)
+linematches <- grep(iso, readLines(con = isofile), value = FALSE)
 
 # number of decays as read from the data file
 ndk <- as.integer(linesplit(readLines(con = isofile)[linematches[1]+1])[5])
@@ -76,8 +77,8 @@ IT <- list()
 
 # search through the data file and get the lines that match the isotope, find the decay type(s)
 for (i in seq(ndk)) {
-  outp <- linesplit(readLines(con = 'isotopes/JEFF33-rdd_all.asc')[linematches[i+1]])
-  outq <- linesplit(readLines(con = 'isotopes/JEFF33-rdd_all.asc')[linematches[i+1]+1])
+  outp <- linesplit(readLines(con = isofile)[linematches[i+1]])
+  outq <- linesplit(readLines(con = isofile)[linematches[i+1]+1])
   
   if (outp[2] == 'A') {
     Alpha$Q <- as.numeric(outp[6])
@@ -165,7 +166,7 @@ for (i in seq(dk_levs)) {
       }
       
       # check to see if there is a half-life!  If not, the daughter isotope is stable by JEFF definitions
-      hfl <- linesplit(grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = TRUE)[1])
+      hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
       if (length(hfl) == 0) {
         stop('You have reached a stable isotope!')
       }
@@ -188,7 +189,7 @@ for (i in seq(dk_levs)) {
       # add the specific activity in mCi / ug
       addIso$SA <- (log(2)/(addIso$t12*24*60)) * (6.02214076E23 / addIso$A / 1E6 / 2.22E9)
       
-      linematches <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)
+      linematches <- grep(iso, readLines(con = isofile), value = FALSE)
       # ndk_line <- grep(iso, readLines(con = 'isotopes/JEFF33-rdd_all.asc'), value = FALSE)[1]+1
       ndk <- as.integer(linesplit(readLines(con = isofile)[linematches[1]+1])[5])
       
@@ -200,8 +201,8 @@ for (i in seq(dk_levs)) {
       IT <- list()
       
       for (i in seq(ndk)) {
-        outp <- linesplit(readLines(con = 'isotopes/JEFF33-rdd_all.asc')[linematches[i+1]])
-        outq <- linesplit(readLines(con = 'isotopes/JEFF33-rdd_all.asc')[linematches[i+1]+1])
+        outp <- linesplit(readLines(con = isofile)[linematches[i+1]])
+        outq <- linesplit(readLines(con = isofile)[linematches[i+1]+1])
         
         if (outp[2] == 'A') {
           Alpha$Q <- as.numeric(outp[6])
@@ -246,8 +247,8 @@ for (i in seq(dk_levs)) {
       # check to see if two branches are converging, and if so add the masterYield parameters
       if (length(Isotopes) > 1) {
         if (any(match(names(Isotopes),addIso$isotope), na.rm = TRUE)) {
-          Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield <- 
-            Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield + addIso$masterYield
+          #Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield <- 
+          #  Isotopes[[which(match(names(Isotopes),addIso$isotope) == 1)]]$masterYield + addIso$masterYield
           Isotopes[[length(Isotopes)+1]] <- addIso
           names(Isotopes)[length(Isotopes)] <- paste(iso, dk, sep = '_')
         } else {
@@ -262,9 +263,17 @@ for (i in seq(dk_levs)) {
   }  
 }
 
+#saveRDS(Isotopes, './decayLists/227AC')
 
-Isotopes$`213BI`$Decays$Beta$daughter
-
+# check for duplicate isotope entries, merge the masterYield value, and delete the duplicate 
+for (i in seq(length(Isotopes))){
+  if (length(unlist(strsplit(names(Isotopes[i]), split = '_'))) == 2) {
+    match <- which(names(Isotopes) == unlist(strsplit(names(Isotopes[i]), split = '_'))[1])
+    Isotopes[[match]]$masterYield <- Isotopes[[match]]$masterYield + Isotopes[[i]]$masterYield
+    Isotopes[i] <- list(NULL)
+  }
+}
+Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
 
 
 #Create graphic diagram of decay chain

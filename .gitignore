@@ -7,3 +7,5 @@
 *.jpeg
 Figures/
 minishare/
+isotopes/
+.DS_Store
