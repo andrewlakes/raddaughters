@@ -492,7 +492,17 @@ amble = "edge[color=black]"
 edges = "1->2 2->8 4->12"
 
 
+#edge loop -> find if there's an alpha daughter for isotope n, and put it into IsotopesEdge 
+#set up IsotopesEdge for all types of decays (columns) vs List of Isotopes (rows)
+IsotopesEdge = NA
+for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
+  IsotopesEdge[n] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[1]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))
+}
 
+
+
+#(length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
+#IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
 
 
 
