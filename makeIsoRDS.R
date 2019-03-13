@@ -1,10 +1,6 @@
 library(stringr)
 library(PeriodicTable)
 library(plyr)
-library(ggplot2)
-library(plotly)
-library(Scale)
-library(DiagrammeR)
 
 
 data("periodicTable")
@@ -14,6 +10,7 @@ data("periodicTable")
 #               destfile = 'isotopes/periodicTable.zip')
 
 #### URL for source http://www.oecd-nea.org/dbdata/jeff/jeff33/
+
 
 setwd('./')
 
@@ -25,10 +22,18 @@ isofile <- '~/Projects/Rad_daughters/isotopes/JEFF33-rdd_all.asc' # this is the 
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '227AC' # input the parent isotope! 
+
+
+
+
+
+
+
+#iso <- '225Ac' # input the parent isotope! 
 branchThreshold <- 0.0001 # input the branch percentage threshold for abandoning a branch
 
 # start making the new isotope in the addIso list
+iso <- toupper(iso)
 addIso <- list()
 addIso$isotope <- iso
 addIso$decayLevel <- 0
@@ -42,6 +47,7 @@ addIso$masterYield <- 1
 
 # get the half-life data, check for units and convert to days 
 hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
+addIso$terminal <- FALSE
 
 if (hfl[4] == 'Y'){
   t12 <- as.numeric(hfl[3])*365
@@ -145,6 +151,10 @@ for (i in seq(dk_levs)) {
   # repeat loop above
   for (j in isos) {
     for (dk in seq(length(Isotopes[[j]]$Decays))) {
+      if (Isotopes[[j]]$terminal == TRUE) {
+        next
+      }
+      
       iso <- toupper(Isotopes[[j]]$Decays[[dk]]$daughter)
       
       addIso <- list()
@@ -168,7 +178,8 @@ for (i in seq(dk_levs)) {
       # check to see if there is a half-life!  If not, the daughter isotope is stable by JEFF definitions
       hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
       if (length(hfl) == 0) {
-        stop('You have reached a stable isotope!')
+        print('You have reached a stable isotope!')
+        next
       }
       
       if (hfl[4] == 'Y'){
@@ -244,6 +255,13 @@ for (i in seq(dk_levs)) {
       Decays <- Decays[-which(lapply(Decays, length) == 0)]
       addIso$Decays <- Decays
       
+      if (length(Decays) == 1 & length(Decays$IT) > 0){
+        addIso$terminal <- TRUE
+      } else {
+        addIso$terminal <- FALSE
+      }
+      
+      
       # check to see if two branches are converging, and if so add the masterYield parameters
       if (length(Isotopes) > 1) {
         if (any(match(names(Isotopes),addIso$isotope), na.rm = TRUE)) {
@@ -269,261 +287,8 @@ for (i in seq(length(Isotopes))){
     match <- which(names(Isotopes) == unlist(strsplit(names(Isotopes[i]), split = '_'))[1])
     Isotopes[[match]]$masterYield <- Isotopes[[match]]$masterYield + Isotopes[[i]]$masterYield
     Isotopes[i] <- list(NULL)
+    Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
   }
 }
-Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
 
-#saveRDS(Isotopes, paste('decayLists/', Isotopes[[1]]$isotope, sep = ''))
-
-#Create graphic diagram of decay chain
-
-#Show in box: isotope, decay mode, half-life, 
-#Show near decay line: energy, and percentage
-
-
-
-#make a list practice:
-
-practice = list(c('color', "things", "n stuff"), list(1,2,3), matrix(1:6, nrow=2, ncol=3))
-names(practice) = c("1st thing", "second thing", "third thing")
-names(practice[[2]]) = c("1", "2", "3")
-
-
-
-#####DiagrammeR practice#####
-
-
-B = "
-digraph Isotopes {
-
-
-graph [overlap = true, fontsize = 10]
-
-
-node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
-fillcolor = '#DDFFEB', fontname = Helvetica]
-1[label='@@1'] 2[label='@@2'] 3[label='@@3'] 4[label='@@4'] 5[label='@@5'] 6[label='@@6'] 7[label='@@7'] 8[label='@@8'] 9[label='@@9'] 10[label='@@10'] 11[label='@@11'] 12[label='@@12']
-
-edge[color=black]
-1->2 2->3 3->4 4->5 5->6
-
-}
-[1]:'ac'
-[2]:'th'
-[3]:'th'
-[4]:'th'
-[5]:'th'
-[6]:'6'
-[7]:'7'
-[8]:'8'
-[9]:'9'
-[10]:'10'
-[11]:'11'
-[12]:'12'
-
-"
-grViz(B)
-
-B = "digraph { graph [overlap = true, fontsize = 10]                      
-node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50, fillcolor = '#DDFFEB', fontname = Helvetica]
-1[label='@@1'] 2[label='@@2'] 3[label='@@3'] 4[label='@@4'] 5[label='@@5'] 6[label='@@6'] 7[label='@@7'] 8[label='@@8'] 9[label='@@9']
-edge[color=black] 1->2 
-} 
-[1]: '227AC' \n [2]: '223FR' \n [3]: '227TH' \n [4]: '223RA' \n [5]: '223RA' \n [6]: '219RN' \n [7]: '219RN' \n [8]: '215PO' \n [9]: '211PB' "
-
-
-
-
-
-
-
-
-
-
-A = "
-digraph Isotopes {
-      
-      
-      graph [overlap = true, fontsize = 10]
-      
-      
-      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
-            fillcolor = '#DDFFEB', fontname = Helvetica]
-      A [label = '@@1']; B; C; D; E; F
-      
-      node [shape = circle, fixedsize = true, width = 0.9, penwidth = 2.0,]
-      1; 2; 3; 4; 5; 6; 7; 8
-      
-      edge[color=black]
-      A->1 B->2 B->3 B->4 C->A
-      1->D E->A 2->4 1->5 1->F
-      E->6 4->6 5->7 6->7 3->8
-      C->B
-      }
-      
-      [1]: 'top'
-      "
-grViz(A)
-
-
-
-
-
-#sequence is
-#   preamble
-#   TerminalIsotopes
-#   nodes
-#   amble
-#   edges
-#   nodesnames
-
-#  @@# calls at the bottom after curly bracket corresponding number
-#       for subsets of same number, use e.g. @@1-1, @@1-2, @@2, @@3
-#       corresponds to [1] \n [2] \n [3]
-
-
-
-
-#                                                   Start
-
-#word soup:
-apostrophe = "'"
-openbracket = "["
-closebracket = "]"
-colon = ":"
-semicolon = ";"
-atat = "@@"
-curlyclose = "}"
-slashn = "\n"
-arrow = "->"
-
-#preamble:
-preamble = "digraph { graph [overlap = true, fontsize = 10]
-                      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
-                            fillcolor = '#DDFFEB', fontname = Helvetica]
-                            "
-
-
-#edges first to determine ALL nodes
-IsotopesTerm = NA
-for (n in 1:length(Isotopes)){
-#1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
-    if ((length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      & 
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      &
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      &
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      &
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)) 
-            {IsotopesTerm[n] = names(Isotopes[n])}
-}
-
-#Find what the final isotope is from those found:
-IsotopesTerminal = NA
-for (n in which(!is.na(IsotopesTerm) )){
-  IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
-}
-
-#clean the final isotope list
-IsotopesTerminal = na.omit(unique(IsotopesTerminal))
-
-
-
-
-#insert nodes -> e.g. isotopes
-nodes = NA
-
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  nodes[n] = rbind(paste(atat,n))
-}
-
-
-#add letters for nodes and make @@ as a label
-#syntax
-nodewords = "[label = '"
-
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  nodes[n] = rbind(paste(n,nodewords,nodes[n],apostrophe,closebracket))
-}
-
-#remove spaces
-nodes = str_replace_all(string=nodes, pattern=" ", repl="")
-
-#collapse vectors to single strings
-nodes = paste(nodes,collapse=" ")
-
-
-
-#set up names - pull from Isotopes master list
-#nodesnames = names(Isotopes)
-
-nodesnames = NA
-
-for (n in 1:(length(Isotopes))){
-  nodesnames[n] = rbind(paste(Isotopes[[n]]$A,Isotopes[[n]]$symb))
-}
-
-#add in terminal isotopes
-for (n in 1:(length(IsotopesTerminal))){
-  nodesnames[length(Isotopes)+n] = rbind(IsotopesTerminal[n])
-}
-
-#add apostrophe's and \n to nodes
-nodesnames = paste(apostrophe,nodesnames,apostrophe,slashn)
-
-#remove spaces
-nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
-
-
-#add in bracket numbers for calling [#]
-brackets = NA
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  brackets[n] = paste(openbracket,rbind(n),closebracket,colon)
-  
-}
-
-#remove spaces
-brackets = str_replace_all(string=brackets, pattern=" ", repl="")
-
-#combine brackets and nodes names
-nodesnames = paste(brackets,nodesnames)
-
-#collapse vectors to single strings
-nodesnames = paste(nodesnames,collapse=" ")
-
-#amble
-amble = "edge[color=black]"
-
-#edges
-edges = "1->2 2->8 4->12"
-
-
-#edge loop -> find if there's an alpha daughter for isotope n, and put it into IsotopesEdge 
-#set up IsotopesEdge for all types of decays (columns) vs List of Isotopes (rows)
-IsotopesEdge = NA
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  IsotopesEdge[n] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[1]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))
-}
-
-
-
-#(length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
-#IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
-
-
-
-
-#2) if alpha is present continue
-#3) find $daughter string, and find which Isotopes[#] it is 
-#4) output #-># into a vector
-#5) if beta is present, continue
-#6) find $daughter string, and find which Isotopes[#] it is 
-#7) output #-># into a vector
-#8) win
-
-
-
-IsotopeDiagram = paste(preamble,nodes,amble,edges,slashn,curlyclose,slashn,nodesnames)
-grViz(IsotopeDiagram)
+saveRDS(Isotopes, paste('decayLists/', Isotopes[[1]]$isotope, sep = ''))
