@@ -38,7 +38,11 @@ addIso <- list()
 addIso$isotope <- iso
 addIso$decayLevel <- 0
 addIso$A <- as.numeric(str_extract(iso, "[0-9]+"))
-addIso$symb <- (str_extract(iso, "[aA-zZ]+"))
+if (length(unlist(str_extract_all(iso, "[aA-zZ]+"))) == 1){
+  addIso$symb <- (str_extract(iso, "[aA-zZ]+"))
+} else if (length(unlist(str_extract_all(iso, "[aA-zZ]+"))) == 2){
+  addIso$symb <- (unlist(str_extract_all(iso, "[aA-zZ]+")))[2]
+}
 addIso$symb <- periodicTable$symb[
   which(match(tolower(periodicTable$symb), tolower(addIso$symb)) == 1)]
 addIso$Z = periodicTable$numb[
