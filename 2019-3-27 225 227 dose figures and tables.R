@@ -53,7 +53,7 @@ library(xlsx)
 # k21 = pb207
 
 
-  #activity in Ci/mg
+  #activity in Ci/mg = uCi/ng
 activity = c(k1 = 58, k2 = 176026.2, k3 = 1609541800, k4 = 20000, k5 = 1.3*10^13, k6 = 4613, k7 = 0, k8 = 96216216216, k9 = 410000, k10 = 110, k11 = 0,
              k12 = 0.072, k13 = 31, k14 = 38926.9, k15 = 51.2, k16 = 13008438.4, k17 = 29461992937, k18 = 24639.1739, k19 = 416405.3549, k20 = 190584.9219, k21 = 0) 
 
@@ -119,6 +119,7 @@ parameters = c(l1 = 0.069663033, l2 = 203.7003959, l3 = 1854115.059, l4 = 21.698
 #2nd row starts at #15
 probabilities = c(ac2fr = 1, fr2at = 1, at2bi = 0.99923, bi2po = 0.978, po2pb = 1, pb2bi = 1, at2rn = 0.00077, bi2tl = 0.0209, rn2po = 1, tl2pb = 1, bi2tl205 = 1, lu2hfbeta = 0.79, lu2hfgamma1 = 0.11, lu2hfgamma2 = 0.064, 
                   ac2th227 = 0.9862, ac2fr223 = 0.0138, fr2ra223 = 1, th2ra223 = 1, ra2rn219 = 1, rn2po215 = 1, po2pb211 = 1, pb2bi211 = 1, bi2tl207 = 1, tl2pb207 = 1, pb2stable = 1 )
+#MeV/destruction
 energies = c(eac2fr = 5.935, efr2at = 6.46, eat2bi = 7.20, ebi2po = 1.4227/3, epo2pb = 8.536, epb2bi = 0.644/3, eat2rn = 0.737/3, ebi2tl = 5.98, ern2po = 7.88, etl2pb = 3.976/3, ebi2tl205 = 3.137, elu2hfbeta = 0.497/3, elu2hfgamma1 = 0.208, elu2hfgamma2 = 0.113,
              eac2th227 = 0.044/3, eac2fr227 = 5.04, efr2ra223 = 1.149/3, eth2ra223 = 6.1466, era2rn219 = 5.97899, ern2po215 = 6.94612, epo2pb211 = 7.52626, epb2bi211 = 1.36697/3, ebi2tl207 = 6.75033, etl2pb207 = 1.41824, epb2stable = 0)
 checktable = data.frame(probabilities, energies)
@@ -178,7 +179,7 @@ timesout = seq(1, timedays*timestepout+1, by = 1)  #number of points sequentiall
 
 
 
-#MODEL INTEGRATION
+#MODEL INTEGRATION (out is nmoles)
 
 out = ode(y = state, times = times, func = daughters, parms = parameters, prob=probabilities)
 
@@ -188,7 +189,8 @@ out = ode(y = state, times = times, func = daughters, parms = parameters, prob=p
 #calculate activity produces over time
 #daughtersactiv = function(t, activity, masses, out) {with(as.list(c(activity, masses, out)),{
 
-#multiply to get DPM from uCi and divide by initial ac-225 DPM to get Fraction Activity Remaining
+#multiply to get DPM from uCi and divide by initial ac-225 DPM to get Fraction Activity Remaining from initial activity
+# "% Activity[x](t) in DPM / Activity[Ac-225](0) in DPM"
 Ac225 = masses[1]*activity[1]*out[timesout,2]*2220000/dpmac225
 Fr221 = masses[2]*activity[2]*out[timesout,3]*2220000/dpmac225
 At217 = masses[3]*activity[3]*out[timesout,4]*2220000/dpmac225
@@ -425,7 +427,7 @@ write.xlsx(plotout2timesvaluescombo, "c:/Users/cesiu/Desktop/ac225227dose/plotou
 
 
 
-#plot out actual activities:
+#plot out actual activities: units are in DPM
 plotoutcounts = cbind(plotout[,1], plotout[,2:(length(plotout))]*dpmac225)
 colnames(plotoutcounts)[1] = "times"
 plotout2counts = cbind(plotout2[,1], plotout2[,2:(length(plotout2))]*dpmac227)
@@ -486,6 +488,7 @@ energiesprobabilities = energies*probabilities
 
 
 #multiply by initial activity in CPM to get CPM due to mass of element initially, and then by energy per destruction, *1440 to convert to energy per days from CPM 
+#MeV/day
 eAc225 = Ac225*dpmac225*(energiesprobabilities[1])*1440
 eFr221 = Fr221*dpmac225*(energiesprobabilities[2])*1440
 eAt217 = At217*dpmac225*(energiesprobabilities[3]+energiesprobabilities[7])*1440
@@ -557,7 +560,7 @@ eplot225p = ggplot(meplotout, aes(x=times, y=value, by=Species))+
   scale_y_continuous()+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  labs(x = "Time (day)", y = "Power (MeV/min)", color="Species")+
+  labs(x = "Time (day)", y = "Power (MeV/day)", color="Species")+
   theme(text = element_text(size=18, face = "bold"),
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
@@ -578,7 +581,7 @@ eplot227p = ggplot(meplotout2, aes(x=times, y=value, by=Species))+
   scale_y_continuous()+#breaks=c(0, 2*10^7, 4*10^7, 6*10^7, 8*10^7, 10*10^7, 12*10^7, 14*10^7, 16*10^7, 18*10^7, 20*10^7, 22*10^7, 24*10^7))+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  labs(x = "Time (day)", y = "Power (MeV/min)", color="Species")+
+  labs(x = "Time (day)", y = "Power (MeV/day)", color="Species")+
   theme(text = element_text(size=18, face = "bold"),
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
@@ -599,6 +602,7 @@ grid.arrange(arrangeGrob(eplot225p, eplot227p, ncol=2))
 
 #For each activity per time, need to back out power/activity ratio at that time.
 #Power/Activity ratios: all based on raw counts from initial actiity
+#MeV/day / DPM
 
 plotoutpowercounts = cbind(eplotout[,1], eplotout[,2:length(eplotout)]/plotoutcounts[,2:length(plotoutcounts)])
 colnames(plotoutpowercounts)[1] = "times"
@@ -623,7 +627,7 @@ for (i in 1:length(plotouttimes)){
 }
 
 plotouttimesvaluespowercountscombo = cbind(plotouttimes,plotouttimesvaluespowercounts)
-colnames(plotouttimesvaluespowercountscombo) = c("times", "Power/Activity (MeV/min/DPM)")
+colnames(plotouttimesvaluespowercountscombo) = c("times", "Power/Activity (MeV/day/DPM)")
 
 write.xlsx(plotouttimesvaluespowercountscombo, "c:/Users/cesiu/Desktop/ac225227dose/plotouttimesvaluespowercountscombo.xlsx")
 
@@ -639,7 +643,7 @@ for (i in 1:length(plotouttimes)){
 }
 
 plotout2timesvaluespowercountscombo = cbind(plotouttimes,plotout2timesvaluespowercounts)
-colnames(plotout2timesvaluespowercountscombo) = c("times", "Power/Activity (MeV/min/DPM)")
+colnames(plotout2timesvaluespowercountscombo) = c("times", "Power/Activity (MeV/day/DPM)")
 
 write.xlsx(plotout2timesvaluespowercountscombo, "c:/Users/cesiu/Desktop/ac225227dose/plotout2timesvaluespowercountscombo.xlsx")
 
