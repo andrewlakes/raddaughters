@@ -522,7 +522,7 @@ colnames(meplotout2) <- c("times","Species","value")
 #plot the indivudual activities produced
 
 #Plot Ac-225
-ggplot(meplotout, aes(x=times, y=value, by=Species))+
+eplot225p = ggplot(meplotout, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
@@ -543,7 +543,7 @@ ggplot(meplotout, aes(x=times, y=value, by=Species))+
 
 
 #Plot Ac-227  
-ggplot(meplotout2, aes(x=times, y=value, by=Species))+
+eplot227p = ggplot(meplotout2, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
@@ -552,7 +552,7 @@ ggplot(meplotout2, aes(x=times, y=value, by=Species))+
                       short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
                       colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
   
-  scale_y_continuous(breaks=c(0, 2*10^8, 4*10^8, 6*10^8, 8*10^8, 10*10^8, 12*10^8, 14*10^8, 16*10^8, 18*10^8, 20*10^8, 22*10^8, 24*10^8))+
+  scale_y_continuous()+#breaks=c(0, 2*10^7, 4*10^7, 6*10^7, 8*10^7, 10*10^7, 12*10^7, 14*10^7, 16*10^7, 18*10^7, 20*10^7, 22*10^7, 24*10^7))+
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   labs(x = "Time (day)", y = "Power (MeV/min)", color="Species")+
@@ -560,6 +560,28 @@ ggplot(meplotout2, aes(x=times, y=value, by=Species))+
         axis.text.y=element_text(colour="black"),
         axis.text.x=element_text(colour="black"))+
   guides(shape=guide_legend(override.aes = list(size=3)))
+
+
+
+#Combo plot
+
+grid.arrange(arrangeGrob(eplot225p, eplot227p, ncol=2))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
