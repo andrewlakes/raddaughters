@@ -103,9 +103,9 @@ nmolespb207 = 0#1/100*nmolesac227
 
 
 #initial DPM of ac-225
-dpmac225 = uciac225*2222000
-dpmlu177 = ucilu177*2222000
-dpmac227 = uciac227*2222000
+dpmac225 = uciac225*2220000
+dpmlu177 = ucilu177*2220000
+dpmac227 = uciac227*2220000
 
 
 #lambda values are ln(2)/t(1/2) with t1/2 in days
@@ -299,12 +299,119 @@ plot227 = ggplot(mplotout2, aes(x=times, y=value, by=Species))+
 grid.arrange(arrangeGrob(plot225, plot227, ncol=2))
 
 
-#
+
+
+
+####Export data for analysis in excel####
+
+write.xlsx(plotout, "c:/Users/cesiu/Desktop/plotout.xlsx")
+write.xlsx(plotout2, "c:/Users/cesiu/Desktop/plotout2.xlsx")
+
+
+#create combo pairs for times and activities of alpha sum for ac225
+plotouttimes = c(10,
+                  10.25,
+                  10.5,
+                  10.75,
+                  11,
+                  12,
+                  13,
+                  14,
+                  15,
+                  16,
+                  17,
+                  18,
+                  19,
+                  20,
+                  25,
+                  30,
+                  40,
+                  50,
+                  60,
+                  75,
+                  100,
+                  125,
+                  150,
+                  175,
+                  200,
+                  225,
+                  250,
+                  300,
+                  365,
+                  730,
+                  1460,
+                  2920,
+                  5840,
+                  7946.78
+)
+
+plotouttimesvalues = NULL
+
+
+for (i in 1:length(plotouttimes)){
+  plotouttimesvalues[i] = plotout[which.min(abs(plotout[,1] - plotouttimes[i])),11]
+}
+
+plotouttimesvaluescombo = cbind(plotouttimes,plotouttimesvalues)
+
+write.xlsx(plotouttimesvaluescombo, "c:/Users/cesiu/Desktop/plotouttimesvaluescombo.xlsx")
 
 
 
 
-#melt the masses
+#create combo pairs for times and activities of alpha sum for ac227
+plotout2times = c(10,
+                  10.25,
+                  10.5,
+                  10.75,
+                  11,
+                  12,
+                  13,
+                  14,
+                  15,
+                  16,
+                  17,
+                  18,
+                  19,
+                  20,
+                  25,
+                  30,
+                  40,
+                  50,
+                  60,
+                  75,
+                  100,
+                  125,
+                  150,
+                  175,
+                  200,
+                  225,
+                  250,
+                  300,
+                  365,
+                  730,
+                  1460,
+                  2920,
+                  5840,
+                  7946.78
+)
+
+plotout2timesvalues = NULL
+
+
+for (i in 1:length(plotout2times)){
+  plotout2timesvalues[i] = plotout2[which.min(abs(plotout2[,1] - plotout2times[i])),12]
+}
+
+plotout2timesvaluescombo = cbind(plotout2times,plotout2timesvalues)
+
+write.xlsx(plotout2timesvaluescombo, "c:/Users/cesiu/Desktop/plotout2timesvaluescombo.xlsx")
+
+
+
+
+
+####melt the masses####
 #choose columns
 out = data.frame(out[plotrows, 1:10])
 #out = data.frame(out[plotrows, c(1,13,14,15,16,17,18,19,20,21,22)])
@@ -388,7 +495,7 @@ eAc227SUM = (eAc227+eTh227+eFr223+eRa223+eRn219+ePo215+ePb211+eBi211+eTl207+ePb2
 
 edaughtersdata = data.frame(times)
 edaughtersdata = cbind(edaughtersdata, eAc225, eFr221, eAt217, eBi213, ePo213, ePb209, eBi209, eRn217, eTl209, eSUM, eSUMoverac225, eLu177, eAlpha, eBeta, eAc227, eTh227, eFr223, eRa223, eRn219, ePo215, ePb211, eBi211, eTl207, ePb207, eAc227SUM)
-colnames(edaughtersdata) = c("times", "Ac-225 (20 nCi)", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "Ac-225 SUM", "SUM / Ac-225", "Lu-177 (4000 nCi)", "Ac-225 SUM Alpha", "Ac-225 SUM Beta", "Ac-227 (20 nCi)", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "Ac-227 SUM")
+colnames(edaughtersdata) = c("times", "Ac-225", "Fr-221", "At-217", "Bi-213", "Po-213", "Pb-209", "Bi-209", "Rn-217", "Tl-209", "Ac-225 SUM", "SUM / Ac-225", "Lu-177", "Ac-225 SUM Alpha", "Ac-225 SUM Beta", "Ac-227", "Th-227", "Fr-223", "Ra-223", "Rn-219", "Po-215", "Pb-211", "Bi-211", "Tl-207", "Pb-207", "Ac-227 SUM")
 
 eplotrows = unique(round(lseq(1, length(timesout), 10000)))
 eplottimes <- times[eplotrows]
