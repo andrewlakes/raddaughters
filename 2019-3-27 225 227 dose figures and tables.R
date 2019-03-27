@@ -236,7 +236,7 @@ plottimes <- times[plotrows]
 #Ac-227 are c(1,15,16,17,18,19,20,21,22,23,24,25)
 
 #Ac-225&Lu-177/Hf-177 *****#8 is Bi-209 final product
-plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,12)]#,13,14)]
+plotout <- daughtersdata[plotrows, c(1,2,3,4,5,6,7,9,10,8,11)]#,13,14)]
 plotout = plotout[-1,] #remove first row
 
 mplotout <- melt(plotout, id="times")
@@ -244,7 +244,7 @@ colnames(mplotout) <- c("times","Species","value")
 
 
 #Ac-227
-plotout2 <- daughtersdata[plotrows, c(1,15,16,17,18,19,20,21,22,23,24,26)] 
+plotout2 <- daughtersdata[plotrows, c(1,15,16,17,18,19,20,21,22,23,24,25)] 
 plotout2 = plotout2[-1,] #remove first row
 
 mplotout2 <- melt(plotout2, id="times")
@@ -304,46 +304,94 @@ grid.arrange(arrangeGrob(plot225, plot227, ncol=2))
 
 ####Export data for analysis in excel####
 
-write.xlsx(plotout, "c:/Users/cesiu/Desktop/plotout.xlsx")
-write.xlsx(plotout2, "c:/Users/cesiu/Desktop/plotout2.xlsx")
+#write.xlsx(plotout, "c:/Users/cesiu/Desktop/ac225227dose/plotout.xlsx")
+#write.xlsx(plotout2, "c:/Users/cesiu/Desktop/ac225227dose/plotout2.xlsx")
 
 
 #create combo pairs for times and activities of alpha sum for ac225
-plotouttimes = c(10,
-                  10.25,
-                  10.5,
-                  10.75,
-                  11,
-                  12,
-                  13,
-                  14,
-                  15,
-                  16,
-                  17,
-                  18,
-                  19,
-                  20,
-                  25,
-                  30,
-                  40,
-                  50,
-                  60,
-                  75,
-                  100,
-                  125,
-                  150,
-                  175,
-                  200,
-                  225,
-                  250,
-                  300,
-                  365,
-                  730,
-                  1460,
-                  2920,
-                  5840,
-                  7946.78
+plotouttimes = c(0.041666667,
+                 0.075,
+                 0.1,
+                 0.125,
+                 0.25,
+                 0.375,
+                 0.5,
+                 0.625,
+                 0.75,
+                 0.875,
+                 1,
+                 1.125,
+                 1.33,
+                 1.53,
+                 1.73,
+                 2,
+                 2.25,
+                 2.5,
+                 2.75,
+                 3,
+                 3.25,
+                 3.5,
+                 3.75,
+                 4,
+                 4.25,
+                 4.5,
+                 4.75,
+                 5,
+                 5.25,
+                 5.5,
+                 5.75,
+                 6,
+                 6.25,
+                 6.5,
+                 6.75,
+                 7,
+                 7.25,
+                 7.5,
+                 7.75,
+                 8,
+                 8.25,
+                 8.5,
+                 8.75,
+                 9,
+                 9.25,
+                 9.5,
+                 9.75,
+                 10,
+                 10.25,
+                 10.5,
+                 10.75,
+                 11,
+                 12,
+                 13,
+                 14,
+                 15,
+                 16,
+                 17,
+                 18,
+                 19,
+                 20,
+                 25,
+                 30,
+                 40,
+                 50,
+                 60,
+                 75,
+                 100,
+                 125,
+                 150,
+                 175,
+                 200,
+                 225,
+                 250,
+                 300,
+                 365,
+                 730,
+                 1460,
+                 2920,
+                 5840,
+                 7946.78
 )
+
 
 plotouttimesvalues = NULL
 
@@ -354,47 +402,13 @@ for (i in 1:length(plotouttimes)){
 
 plotouttimesvaluescombo = cbind(plotouttimes,plotouttimesvalues)
 
-write.xlsx(plotouttimesvaluescombo, "c:/Users/cesiu/Desktop/plotouttimesvaluescombo.xlsx")
+write.xlsx(plotouttimesvaluescombo, "c:/Users/cesiu/Desktop/ac225227dose/plotouttimesvaluescombo.xlsx")
 
 
 
 
 #create combo pairs for times and activities of alpha sum for ac227
-plotout2times = c(10,
-                  10.25,
-                  10.5,
-                  10.75,
-                  11,
-                  12,
-                  13,
-                  14,
-                  15,
-                  16,
-                  17,
-                  18,
-                  19,
-                  20,
-                  25,
-                  30,
-                  40,
-                  50,
-                  60,
-                  75,
-                  100,
-                  125,
-                  150,
-                  175,
-                  200,
-                  225,
-                  250,
-                  300,
-                  365,
-                  730,
-                  1460,
-                  2920,
-                  5840,
-                  7946.78
-)
+plotout2times = plotouttimes
 
 plotout2timesvalues = NULL
 
@@ -405,8 +419,17 @@ for (i in 1:length(plotout2times)){
 
 plotout2timesvaluescombo = cbind(plotout2times,plotout2timesvalues)
 
-write.xlsx(plotout2timesvaluescombo, "c:/Users/cesiu/Desktop/plotout2timesvaluescombo.xlsx")
+write.xlsx(plotout2timesvaluescombo, "c:/Users/cesiu/Desktop/ac225227dose/plotout2timesvaluescombo.xlsx")
 
+
+
+
+
+#plot out actual activities:
+plotoutcounts = cbind(plotout[,1], plotout[,2:(length(plotout))]*dpmac225)
+colnames(plotoutcounts)[1] = "times"
+plotout2counts = cbind(plotout2[,1], plotout2[,2:(length(plotout2))]*dpmac227)
+colnames(plotout2counts)[1] = "times"
 
 
 
@@ -574,13 +597,51 @@ grid.arrange(arrangeGrob(eplot225p, eplot227p, ncol=2))
 
 
 
+#For each activity per time, need to back out power/activity ratio at that time.
+#Power/Activity ratios: all based on raw counts from initial actiity
+
+plotoutpowercounts = cbind(eplotout[,1], eplotout[,2:length(eplotout)]/plotoutcounts[,2:length(plotoutcounts)])
+colnames(plotoutpowercounts)[1] = "times"
+
+plotout2powercounts = cbind(eplotout2[,1], eplotout2[,2:length(eplotout2)]/plotout2counts[,2:length(plotout2counts)])
+colnames(plotout2powercounts)[1] = "times"
 
 
+#output to excel:
+
+#create combo pairs for times and activities of alpha sum for ac227
 
 
+#Ac-225
+plotouttimespowercounts = plotouttimes 
+
+plotouttimesvaluespowercounts = NULL
 
 
+for (i in 1:length(plotouttimes)){
+  plotouttimesvaluespowercounts[i] = plotoutpowercounts[which.min(abs(plotoutpowercounts[,1] - plotouttimespowercounts[i])),11]
+}
 
+plotouttimesvaluespowercountscombo = cbind(plotouttimes,plotouttimesvaluespowercounts)
+colnames(plotouttimesvaluespowercountscombo) = c("times", "Power/Activity (MeV/min/DPM)")
+
+write.xlsx(plotouttimesvaluespowercountscombo, "c:/Users/cesiu/Desktop/ac225227dose/plotouttimesvaluespowercountscombo.xlsx")
+
+
+#Ac-227
+plotout2timespowercounts = plotouttimes 
+
+plotout2timesvaluespowercounts = NULL
+
+
+for (i in 1:length(plotouttimes)){
+  plotout2timesvaluespowercounts[i] = plotout2powercounts[which.min(abs(plotout2powercounts[,1] - plotout2timespowercounts[i])),12]
+}
+
+plotout2timesvaluespowercountscombo = cbind(plotouttimes,plotout2timesvaluespowercounts)
+colnames(plotout2timesvaluespowercountscombo) = c("times", "Power/Activity (MeV/min/DPM)")
+
+write.xlsx(plotout2timesvaluespowercountscombo, "c:/Users/cesiu/Desktop/ac225227dose/plotout2timesvaluespowercountscombo.xlsx")
 
 
 
