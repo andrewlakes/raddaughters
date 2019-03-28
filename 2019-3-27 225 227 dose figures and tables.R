@@ -527,7 +527,7 @@ eplotrows = unique(round(lseq(1, length(timesout), 10000)))
 eplottimes <- times[eplotrows]
 
 
-#plot out the energies MeV/min vs time (days)
+#plot out the energies MeV/day vs time (days)
 
 
 eplotout <- edaughtersdata[eplotrows, c(1,2,3,4,5,6,7,9,10,8,11)]#,13,14)]
@@ -742,26 +742,6 @@ ggplot(meplotoutlu, aes(x=times, y=value, by=Species))+
   guides(shape=guide_legend(override.aes = list(size=3)))
 
 
-#### plot all 4 plots ####
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -788,13 +768,13 @@ rLu177.Hf177 = Lu177*dpmlu177*(probabilities[12])*1440
 
 rdaughtersdata = data.frame(times)
 rdaughtersdata = cbind(rdaughtersdata, rAc225.Fr221, rFr221.At217, rAt217.Bi213, rAt217.Rn217, rBi213.Po213, rBi213.Tl209, rPo213.Pb209, rPb209.Bi209, rRn217.Po213, rTl209.Pb209, rLu177.Hf177)
-colnames(edaughtersdata) = c("times", "Ac225.Fr221 (30 nCi)", "Fr221.At217", "At217.Bi213", "At217.Rn217", "Bi213.Po213", "Bi213.Tl209", "Po213.Pb209", "Pb209.Bi209", "Rn217.Po213", "Tl209.Pb209", "Lu177.Hf177 (4000 nCi)")
+colnames(edaughtersdata) = c("times", "Ac225.Fr221", "Fr221.At217", "At217.Bi213", "At217.Rn217", "Bi213.Po213", "Bi213.Tl209", "Po213.Pb209", "Pb209.Bi209", "Rn217.Po213", "Tl209.Pb209", "Lu177.Hf177")
 
 rplotrows = unique(round(lseq(1, length(timesout), 10000)))
 rplottimes <- times[rplotrows]
 
 rplotout <- rdaughtersdata[rplotrows, c(1:12)]
-colnames(rplotout) = c("times", "Ac225.Fr221 (30 nCi)", "Fr221.At217", "At217.Bi213", "At217.Rn217", "Bi213.Po213", "Bi213.Tl209", "Po213.Pb209", "Pb209.Bi209", "Rn217.Po213", "Tl209.Pb209", "Lu177.Hf177 (4000 nCi)")
+colnames(rplotout) = c("times", "Ac225.Fr221", "Fr221.At217", "At217.Bi213", "At217.Rn217", "Bi213.Po213", "Bi213.Tl209", "Po213.Pb209", "Pb209.Bi209", "Rn217.Po213", "Tl209.Pb209", "Lu177.Hf177")
 
 
 #
@@ -828,22 +808,22 @@ colnames(rplotout) = c("times", "Ac225.Fr221 (30 nCi)", "Fr221.At217", "At217.Bi
 # constants
 
 
-sol = 299792458 #m/s
-malpha = 6.64884*10^-27 #kg
+sol = 299792458 #m/s speed of light
+malpha = 6.64884*10^-27 #kg mass of alpha particle
 
-zbeta = 1
-e0 = 8.85419*10^-12 #C^2/(N m^2)
-echarge = 1.60218*10^-19 #C
-ion = 1.248*10^-17 #J is 78 eV for water
+zbeta = 1 #charge of beta particle
+e0 = 8.85419*10^-12 #C^2/(N m^2) vacuum permittivity
+echarge = 1.60218*10^-19 #C charge of an electron
+ion = 1.248*10^-17 #J ionization energy is 78 eV for water
 Z = 6.6 #average charge for water
-Na = 6.022*10^23 #atoms/mole
-densitywater = 993333 #g/m^3
-A = 14.3333333 #atomic mass average water
-Mu = 1  #g/mol molar mass constant
-me = 9.10938*10^-31 #kg electron mass
+Na = 6.022*10^23 #atoms/mole avogadro's number
+densitywater = 993333 #g/m^3 density of water
+A = 14.3333333 #atomic mass average water 
+Mu = 1  #g/mol molar mass constant 
+me = 9.10938*10^-31 #kg electron mass 
 mwater = 2.99003*10^-36 #kg mass water
-joulesperev = 1.6*10^-19 #J/eV
-mmpermeter = 1000 #mm/m
+joulesperev = 1.6*10^-19 #J/eV conversion
+mmpermeter = 1000 #mm/m conversion
 
 
 
@@ -897,8 +877,10 @@ adistances = NULL
 
 
 
-#zalpha is the charge as a function of velocity due to picking up electrons, starts at 2, goes to 0 eventually when slow enough.
+#zalpha is the alpha charge as a function of velocity due to picking up electrons, starts at 2, goes to 0 eventually when slow enough.
 zalpha = function(v){0.0094*(v*100/10^9)^5-0.2591*(v*100/10^9)^4+1.6336*(v*100/10^9)^3-4.2678*(v*100/10^9)^2+5.0412*(v*100/10^9)-0.2426} #v is in m/s
+
+#non-relativistic bethe eq
 dEadx = function(v){(((4*pi*zalpha(v)^2)/(me*v^2))*((Na*Z*densitywater)/(A*Mu))*(echarge^2/(4*pi*e0))^2*(log((2*me*v^2)/ion)))/mmpermeter}
 dEadxstart = function(e,j){dEadx(v0alpha(e,j))}
 dEastart = function(e,j){astepsize*dEadxstart(e,j)}
@@ -943,6 +925,8 @@ bdistances = NULL
 
 
 #Exb = function(e){e0beta(lorentz0(e))}
+
+#relativistic bethe eq
 dEbdx = function(v,Exb){((2*pi/(v^2*me))*(Na*Z*densitywater/(A*Mu))*((echarge^2)/(4*pi*e0))^2)*(log(((me*v^2*Exb)/(2*ion^2))*(1+(Exb/(me*sol^2)))^2)-log(2)*((1-(v/sol)^2)^0.5-(1-(v/sol)^2)/2)+((1-(1-(v/sol)^2)^0.5)^2)/16)/mmpermeter}
 dEbdxstart = function(j){dEbdx(v0beta(lorentz0(j)),e0beta(lorentz0(j)))}
 dEbstart = function(j){bstepsize*dEbdxstart(j)}
