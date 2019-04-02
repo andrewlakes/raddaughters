@@ -552,7 +552,7 @@ eplot225p = ggplot(meplotout, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
-  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000), labels = scales::number_format(accuracy = 0.01))+
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000), labels = scales::number_format(accuracy = 0.1))+
   annotation_logticks(base = 10, sides = "b", scaled = TRUE,
                       short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
                       colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
@@ -573,7 +573,7 @@ eplot227p = ggplot(meplotout2, aes(x=times, y=value, by=Species))+
   geom_point(aes(color=Species, shape=Species), size=1.25, alpha=1, stroke = 1.25)+
   scale_shape_manual(values = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17))+ 
   
-  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000), labels = scales::number_format(accuracy = 0.01))+
+  scale_x_log10(breaks=c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000), labels = scales::number_format(accuracy = 0.1))+
   annotation_logticks(base = 10, sides = "b", scaled = TRUE,
                       short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
                       colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL)+
