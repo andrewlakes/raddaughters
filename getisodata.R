@@ -275,22 +275,24 @@ for (i in seq(length(Isotopes))){
     Isotopes[i] <- list(NULL)
   }
 }
-Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
+
+#if there are no dupes, ignore -> had error original way
+if (length(which(lapply(Isotopes, length) == 0)) != 0){Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]}
+#original:
+#Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
+
+
+
 
 #saveRDS(Isotopes, paste('decayLists/', Isotopes[[1]]$isotope, sep = ''))
 
-#Create graphic diagram of decay chain
-
-#Show in box: isotope, decay mode, half-life, 
-#Show near decay line: energy, and percentage
 
 
 
 #make a list practice:
-
-practice = list(c('color', "things", "n stuff"), list(1,2,3), matrix(1:6, nrow=2, ncol=3))
-names(practice) = c("1st thing", "second thing", "third thing")
-names(practice[[2]]) = c("1", "2", "3")
+#practice = list(c('color', "things", "n stuff"), list(1,2,3), matrix(1:6, nrow=2, ncol=3))
+#names(practice) = c("1st thing", "second thing", "third thing")
+#names(practice[[2]]) = c("1", "2", "3")
 
 
 
@@ -353,28 +355,14 @@ nodestitle = paste0("<p><b>", 1:length(nodesnames),"</b><br>Node title goes here
 #create master nodes data.frame
 nodes = data.frame(id = nodesid, label = nodeslabel, value = nodesvalue, shape = nodesshape, title = nodestitle, shadow = TRUE )
 
-#Edges variables
-edgesfrom = 1:length(nodesnames)
-edgesto = 2:(length(nodesnames)+1)
-edgeslabel = 'hi'
-edgeslength = 100
-edgeswidth = 1:length(edgesfrom)
-edgesarrows = "to"
-edgesdashes = TRUE
-edgestitle = paste("Edge Name HERERE", 1:length(edgesfrom))
-edgessmooth = TRUE
-edgesshadow = TRUE
-
-edges = data.frame(from = edgesfrom, to = edgesto, label = edgeslabel, length = edgeslength, width = edgeswidth,
-                   arrows = edgesarrows, dashes = edgesdashes, title = edgestitle, smooth = edgessmooth, shadow = edgesshadow)
-
-
-#test
-visNetwork(nodes, edges, width = "100%")
 
 
 
 
+
+
+
+#find edges
 #edge loop -> find if there's an alpha daughter for isotope n, and put it into IsotopesEdge 
 #set up IsotopesEdge for all types of decays (columns) vs List of Isotopes (rows)
 IsotopesEdge = NA
@@ -401,35 +389,34 @@ for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
 
 
 
-edges <- data.frame(from = sample(1:10,8), to = sample(1:10, 8),
-                    
-                    # add labels on edges                  
-                    label = paste("Edge", 1:8),
-                    
-                    # length
-                    length = c(100,500),
-                    
-                    # width
-                    width = c(4,1),
-                    
-                    # arrows
-                    arrows = c("to", "from", "middle", "middle;to"),
-                    
-                    # dashes
-                    dashes = c(TRUE, FALSE),
-                    
-                    # tooltip (html or character)
-                    title = paste("Edge", 1:8),
-                    
-                    # smooth
-                    smooth = c(FALSE, TRUE),
-                    
-                    # shadow
-                    shadow = c(FALSE, TRUE, FALSE, TRUE)) 
 
-# head(edges)
-#  from to  label length    arrows dashes  title smooth shadow
-#    10  7 Edge 1    100        to   TRUE Edge 1  FALSE  FALSE
-#     4 10 Edge 2    500      from  FALSE Edge 2   TRUE   TRUE
 
+
+
+
+
+
+
+
+#test values -> move after find edges later
+#Edges variables
+edgesfrom = 1:length(nodesnames)
+edgesto = 2:(length(nodesnames)+1)
+edgeslabel = 'hi'
+edgeslength = 100
+edgeswidth = 1:length(edgesfrom)
+edgesarrows = "to"
+edgesdashes = TRUE
+edgestitle = paste("Edge Name HERERE", 1:length(edgesfrom))
+edgessmooth = TRUE
+edgesshadow = TRUE
+
+edges = data.frame(from = edgesfrom, to = edgesto, label = edgeslabel, length = edgeslength, width = edgeswidth,
+                   arrows = edgesarrows, dashes = edgesdashes, title = edgestitle, smooth = edgessmooth, shadow = edgesshadow)
+
+
+
+#test
+visNetwork(nodes, edges, width = "100%")%>%
+  visLayout(hierarchical = TRUE)
 
