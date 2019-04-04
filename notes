@@ -1,0 +1,6 @@
+Notes:
+
+For isotope data:
+- Q is the decay energy (keV)
+- BranchYield is the fraction of decays following that branch
+- BrQ is the decay energy times the branch yield (adjusted energy per nuclide in keV)
