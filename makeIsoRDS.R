@@ -65,7 +65,12 @@ if (hfl[4] == 'Y'){
   t12 <- as.numeric(hfl[3])/24/60/60
 } else if (hfl[4] == 'MS') {
   t12 <- as.numeric(hfl[3])/24/60/60/1000
+} else if (hfl[4] == 'US') {
+  t12 <- as.numeric(hfl[3])/24/60/60/1000/1000
+} else if (hfl[4] == 'NS') {
+  t12 <- as.numeric(hfl[3])/24/60/60/1000/1000/1000
 }
+
 
 addIso$t12 <- t12
 
@@ -198,6 +203,10 @@ for (i in seq(dk_levs)) {
         t12 <- as.numeric(hfl[3])/24/60/60
       } else if (hfl[4] == 'MS') {
         t12 <- as.numeric(hfl[3])/24/60/60/1000
+      } else if (hfl[4] == 'US') {
+        t12 <- as.numeric(hfl[3])/24/60/60/1000/1000
+      } else if (hfl[4] == 'NS') {
+        t12 <- as.numeric(hfl[3])/24/60/60/1000/1000/1000
       }
       addIso$t12 <- t12
       
