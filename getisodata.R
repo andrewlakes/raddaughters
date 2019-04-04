@@ -2,9 +2,10 @@ library(stringr)
 library(PeriodicTable)
 library(plyr)
 library(ggplot2)
-library(plotly)
+#library(plotly)
 library(Scale)
 library(DiagrammeR)
+library(visNetwork)
 
 
 data("periodicTable")
@@ -19,13 +20,16 @@ setwd('./')
 
 Isotopes <- list()
 
-isofile <- '~/Projects/Rad_daughters/isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
+
+#Not sure why there are two projects, raddaughters, and Rad_daughters?
+#isofile <- '~/Projects/Rad_daughters/isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
+isofile <- '~/raddaughters/JEFF33-rdd_all.asc'
 
 # custom function for splitting lines at whitespaces and unlisting
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '227AC' # input the parent isotope! 
+iso <- '225AC' # input the parent isotope! 
 branchThreshold <- 0.0001 # input the branch percentage threshold for abandoning a branch
 
 # start making the new isotope in the addIso list
@@ -271,140 +275,33 @@ for (i in seq(length(Isotopes))){
     Isotopes[i] <- list(NULL)
   }
 }
-Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
+
+#if there are no dupes, ignore -> had error original way
+if (length(which(lapply(Isotopes, length) == 0)) != 0){Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]}
+#original:
+#Isotopes <- Isotopes[-c(which(lapply(Isotopes, length) == 0))]
+
+
+
 
 #saveRDS(Isotopes, paste('decayLists/', Isotopes[[1]]$isotope, sep = ''))
 
-#Create graphic diagram of decay chain
-
-#Show in box: isotope, decay mode, half-life, 
-#Show near decay line: energy, and percentage
 
 
 
 #make a list practice:
-
-practice = list(c('color', "things", "n stuff"), list(1,2,3), matrix(1:6, nrow=2, ncol=3))
-names(practice) = c("1st thing", "second thing", "third thing")
-names(practice[[2]]) = c("1", "2", "3")
-
-
-
-#####DiagrammeR practice#####
-
-
-B = "
-digraph Isotopes {
-
-
-graph [overlap = true, fontsize = 10]
-
-
-node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
-fillcolor = '#DDFFEB', fontname = Helvetica]
-1[label='@@1'] 2[label='@@2'] 3[label='@@3'] 4[label='@@4'] 5[label='@@5'] 6[label='@@6'] 7[label='@@7'] 8[label='@@8'] 9[label='@@9'] 10[label='@@10'] 11[label='@@11'] 12[label='@@12']
-
-edge[color=black]
-1->2 2->3 3->4 4->5 5->6
-
-}
-[1]:'ac'
-[2]:'th'
-[3]:'th'
-[4]:'th'
-[5]:'th'
-[6]:'6'
-[7]:'7'
-[8]:'8'
-[9]:'9'
-[10]:'10'
-[11]:'11'
-[12]:'12'
-
-"
-grViz(B)
-
-B = "digraph { graph [overlap = true, fontsize = 10]                      
-node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50, fillcolor = '#DDFFEB', fontname = Helvetica]
-1[label='@@1'] 2[label='@@2'] 3[label='@@3'] 4[label='@@4'] 5[label='@@5'] 6[label='@@6'] 7[label='@@7'] 8[label='@@8'] 9[label='@@9']
-edge[color=black] 1->2 
-} 
-[1]: '227AC' \n [2]: '223FR' \n [3]: '227TH' \n [4]: '223RA' \n [5]: '223RA' \n [6]: '219RN' \n [7]: '219RN' \n [8]: '215PO' \n [9]: '211PB' "
+#practice = list(c('color', "things", "n stuff"), list(1,2,3), matrix(1:6, nrow=2, ncol=3))
+#names(practice) = c("1st thing", "second thing", "third thing")
+#names(practice[[2]]) = c("1", "2", "3")
 
 
 
 
+####Instead of DiagrammeR -> using visNetwork####
 
 
 
-
-
-
-A = "
-digraph Isotopes {
-      
-      
-      graph [overlap = true, fontsize = 10]
-      
-      
-      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
-            fillcolor = '#DDFFEB', fontname = Helvetica]
-      A [label = '@@1']; B; C; D; E; F
-      
-      node [shape = circle, fixedsize = true, width = 0.9, penwidth = 2.0,]
-      1; 2; 3; 4; 5; 6; 7; 8
-      
-      edge[color=black]
-      A->1 B->2 B->3 B->4 C->A
-      1->D E->A 2->4 1->5 1->F
-      E->6 4->6 5->7 6->7 3->8
-      C->B
-      }
-      
-      [1]: 'top'
-      "
-grViz(A)
-
-
-
-
-
-#sequence is
-#   preamble
-#   TerminalIsotopes
-#   nodes
-#   amble
-#   edges
-#   nodesnames
-
-#  @@# calls at the bottom after curly bracket corresponding number
-#       for subsets of same number, use e.g. @@1-1, @@1-2, @@2, @@3
-#       corresponds to [1] \n [2] \n [3]
-
-
-
-
-#                                                   Start
-
-#word soup:
-apostrophe = "'"
-openbracket = "["
-closebracket = "]"
-colon = ":"
-semicolon = ";"
-atat = "@@"
-curlyclose = "}"
-slashn = "\n"
-arrow = "->"
-
-#preamble:
-preamble = "digraph { graph [overlap = true, fontsize = 10]
-                      node [shape = box, style = filled, penwidth = 2.0, color = 'black', alpha = 50,
-                            fillcolor = '#DDFFEB', fontname = Helvetica]
-                            "
-
-
-#edges first to determine ALL nodes
+#first to determine ALL nodes
 IsotopesTerm = NA
 for (n in 1:length(Isotopes)){
 #1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
@@ -430,32 +327,6 @@ for (n in which(!is.na(IsotopesTerm) )){
 IsotopesTerminal = na.omit(unique(IsotopesTerminal))
 
 
-
-
-#insert nodes -> e.g. isotopes
-nodes = NA
-
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  nodes[n] = rbind(paste(atat,n))
-}
-
-
-#add letters for nodes and make @@ as a label
-#syntax
-nodewords = "[label = '"
-
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  nodes[n] = rbind(paste(n,nodewords,nodes[n],apostrophe,closebracket))
-}
-
-#remove spaces
-nodes = str_replace_all(string=nodes, pattern=" ", repl="")
-
-#collapse vectors to single strings
-nodes = paste(nodes,collapse=" ")
-
-
-
 #set up names - pull from Isotopes master list
 #nodesnames = names(Isotopes)
 
@@ -470,47 +341,74 @@ for (n in 1:(length(IsotopesTerminal))){
   nodesnames[length(Isotopes)+n] = rbind(IsotopesTerminal[n])
 }
 
-#add apostrophe's and \n to nodes
-nodesnames = paste(apostrophe,nodesnames,apostrophe,slashn)
-
 #remove spaces
 nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
 
+#Node attributes
+nodesid = 1:length(nodesnames)
+nodeslabel = nodesnames
+nodesvalue = 1
+nodesshape = 'circle'
+nodestitle = paste0("<p><b>", 1:length(nodesnames),"</b><br>Node title goes here</p>")
+#nodescolor = 'green'
 
-#add in bracket numbers for calling [#]
-brackets = NA
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  brackets[n] = paste(openbracket,rbind(n),closebracket,colon)
+#create master nodes data.frame
+nodes = data.frame(id = nodesid, label = nodeslabel, value = nodesvalue, shape = nodesshape, title = nodestitle, shadow = TRUE )
+
+
+
+
+
+
+
+#find edges
+#numbers in IsotopesEdgeto correspond to isotopes in nodes list order.
+
+IsotopesEdgeto = matrix(NA, nrow = 5, ncol = length(nodes[,2]))
+colnames(IsotopesEdgeto) = nodes[,2]
+rownames(IsotopesEdgeto) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
+
+
+
+
+for (i in 1:(length(nodes))){
+  if ((!is.null(Isotopes[[i]]$Decays$Alpha$daughter))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {IsotopesEdgeto[1,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$Beta$daughter))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {IsotopesEdgeto[2,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$daughter))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {IsotopesEdgeto[3,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$EC$daughter))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {IsotopesEdgeto[4,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$IT$daughter))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {IsotopesEdgeto[5,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  }
   
+
+
+#now split into groups based on decay mode
+#can create third dimension if you want on probability later#
+
+
+edgesto = data.frame(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+edgesfrom = data.frame(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+
+for (i in 1:length(IsotopesEdgeto[,1])) {
+  if (!is.na(IsotopesEdgeto[1,i])) {
+    edgesto[i] = IsotopesEdgeto[1,i]
+  }
 }
 
-#remove spaces
-brackets = str_replace_all(string=brackets, pattern=" ", repl="")
+then do which or exact or something
 
-#combine brackets and nodes names
-nodesnames = paste(brackets,nodesnames)
+###Check on 
+#!is.null(which(nodes[,2] == Isotopes[[i]]$Decays$Beta$daughter))
 
-#collapse vectors to single strings
-nodesnames = paste(nodesnames,collapse=" ")
-
-#amble
-amble = "edge[color=black]"
-
-#edges
-edges = "1->2 2->8 4->12"
-
-
-#edge loop -> find if there's an alpha daughter for isotope n, and put it into IsotopesEdge 
-#set up IsotopesEdge for all types of decays (columns) vs List of Isotopes (rows)
-IsotopesEdge = NA
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  IsotopesEdge[n] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[1]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))
-}
 
 
 
 #(length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
 #IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
+
+
+
+
+
 
 
 
@@ -525,5 +423,35 @@ for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
 
 
 
-IsotopeDiagram = paste(preamble,nodes,amble,edges,slashn,curlyclose,slashn,nodesnames)
-grViz(IsotopeDiagram)
+
+
+
+
+
+
+
+
+
+
+#test values -> move after find edges later
+#Edges variables
+edgesfrom = 1:length(nodesnames)
+edgesto = 2:(length(nodesnames)+1)
+edgeslabel = 'hi'
+edgeslength = 100
+edgeswidth = 1:length(edgesfrom)
+edgesarrows = "to"
+edgesdashes = TRUE
+edgestitle = paste("Edge Name HERERE", 1:length(edgesfrom))
+edgessmooth = TRUE
+edgesshadow = TRUE
+
+edges = data.frame(from = edgesfrom, to = edgesto, label = edgeslabel, length = edgeslength, width = edgeswidth,
+                   arrows = edgesarrows, dashes = edgesdashes, title = edgestitle, smooth = edgessmooth, shadow = edgesshadow)
+
+
+
+#test
+visNetwork(nodes, edges, width = "100%")%>%
+  visLayout(hierarchical = TRUE)
+
