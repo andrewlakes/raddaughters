@@ -2,7 +2,7 @@ library(stringr)
 library(PeriodicTable)
 library(plyr)
 library(ggplot2)
-library(plotly)
+#library(plotly)
 library(Scale)
 library(DiagrammeR)
 library(visNetwork)
@@ -29,7 +29,7 @@ isofile <- '~/raddaughters/JEFF33-rdd_all.asc'
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '227AC' # input the parent isotope! 
+iso <- '225AC' # input the parent isotope! 
 branchThreshold <- 0.0001 # input the branch percentage threshold for abandoning a branch
 
 # start making the new isotope in the addIso list
@@ -361,19 +361,39 @@ nodes = data.frame(id = nodesid, label = nodeslabel, value = nodesvalue, shape =
 
 
 
-
 #find edges
-#edge loop -> find if there's an alpha daughter for isotope n, and put it into IsotopesEdge 
-#set up IsotopesEdge for all types of decays (columns) vs List of Isotopes (rows)
-IsotopesEdge = NA
-for (n in 1:(length(Isotopes)+length(IsotopesTerminal))){
-  IsotopesEdge[n] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[1]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))
+#numbers in IsotopesEdge correspond to isotopes in nodes list order.
+
+IsotopesEdge = matrix(NA, nrow = 5, ncol = length(nodes[,2]))
+colnames(IsotopesEdge) = nodes[,2]
+rownames(IsotopesEdge) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
+
+
+for (i in 1:(length(nodes))){
+  if (!is.null(Isotopes[[i]]$Decays$Alpha$daughter)) {IsotopesEdge[1,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))
 }
+  }
+
+
+for (i in 1:(length(nodes))){
+  if ((!is.null(Isotopes[[i]]$Decays$Beta$daughter))&(!is.null(which(nodes[,2] == Isotopes[[i]]$Decays$Beta$daughter)))) {IsotopesEdge[2,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))
+  }
+}
+
+
+###Check on 
+#!is.null(which(nodes[,2] == Isotopes[[i]]$Decays$Beta$daughter))
+
 
 
 
 #(length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
 #IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
+
+
+
+
+
 
 
 
