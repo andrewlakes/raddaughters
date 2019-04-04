@@ -362,24 +362,39 @@ nodes = data.frame(id = nodesid, label = nodeslabel, value = nodesvalue, shape =
 
 
 #find edges
-#numbers in IsotopesEdge correspond to isotopes in nodes list order.
+#numbers in IsotopesEdgeto correspond to isotopes in nodes list order.
 
-IsotopesEdge = matrix(NA, nrow = 5, ncol = length(nodes[,2]))
-colnames(IsotopesEdge) = nodes[,2]
-rownames(IsotopesEdge) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
+IsotopesEdgeto = matrix(NA, nrow = 5, ncol = length(nodes[,2]))
+colnames(IsotopesEdgeto) = nodes[,2]
+rownames(IsotopesEdgeto) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
 
 
-for (i in 1:(length(nodes))){
-  if (!is.null(Isotopes[[i]]$Decays$Alpha$daughter)) {IsotopesEdge[1,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))
-}
-  }
 
 
 for (i in 1:(length(nodes))){
-  if ((!is.null(Isotopes[[i]]$Decays$Beta$daughter))&(!is.null(which(nodes[,2] == Isotopes[[i]]$Decays$Beta$daughter)))) {IsotopesEdge[2,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))
+  if ((!is.null(Isotopes[[i]]$Decays$Alpha$daughter))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {IsotopesEdgeto[1,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$Beta$daughter))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {IsotopesEdgeto[2,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$daughter))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {IsotopesEdgeto[3,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$EC$daughter))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {IsotopesEdgeto[4,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$IT$daughter))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {IsotopesEdgeto[5,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  }
+  
+
+
+#now split into groups based on decay mode
+#can create third dimension if you want on probability later#
+
+
+edgesto = data.frame(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+edgesfrom = data.frame(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+
+for (i in 1:length(IsotopesEdgeto[,1])) {
+  if (!is.na(IsotopesEdgeto[1,i])) {
+    edgesto[i] = IsotopesEdgeto[1,i]
   }
 }
 
+then do which or exact or something
 
 ###Check on 
 #!is.null(which(nodes[,2] == Isotopes[[i]]$Decays$Beta$daughter))
