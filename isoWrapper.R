@@ -7,7 +7,8 @@ for (i in listIsos){
   if (length(which(existing == toupper(iso))) > 0){
     next
   } else {
-    print(iso)
+    message(paste('Getting data for', iso, sep = ' '))
     source('makeIsoRDS.R')
   }
 }
+

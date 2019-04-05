@@ -53,6 +53,10 @@ addIso$masterYield <- 1
 hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
 addIso$terminal <- FALSE
 
+if (length(hfl) == 0){
+  message(paste("--WARNING-- There is no data for the isotope", iso, sep = ' '))
+} else {
+
 if (hfl[4] == 'Y'){
   t12 <- as.numeric(hfl[3])*365
 } else if (hfl[4] == 'D'){
@@ -179,7 +183,7 @@ for (i in seq(dk_levs)) {
       
       # check to see if the branch is insignificant
       if (addIso$masterYield < branchThreshold) {
-        print(paste('The ', addIso$A, addIso$symb, ' branch has been terminated due to insufficient yield',
+        message(paste('--NOTICE-- The ', addIso$A, addIso$symb, ' branch has been terminated due to insufficient yield',
                     sep = ''))
         next
       }
@@ -187,7 +191,7 @@ for (i in seq(dk_levs)) {
       # check to see if there is a half-life!  If not, the daughter isotope is stable by JEFF definitions
       hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
       if (length(hfl) == 0) {
-        print('You have reached a stable isotope!')
+        message('--NOTICE-- You have reached a stable isotope!')
         next
       }
       
@@ -305,3 +309,4 @@ for (i in seq(length(Isotopes))){
 }
 
 saveRDS(Isotopes, paste('decayLists/', Isotopes[[1]]$isotope, sep = ''))
+}
