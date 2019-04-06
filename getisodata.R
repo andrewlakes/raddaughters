@@ -352,10 +352,17 @@ nodeslabel = nodesnames
 nodesvalue = 1
 nodesshape = 'circle'
 nodestitle = paste0("<p><b>", 1:length(nodesnames),"</b><br>Node title goes here</p>")
+nodeslevel = edgesfrom
 #nodescolor = 'green'
 
 #create master nodes data.frame
-nodes = data.frame(id = nodesid, label = nodeslabel, value = nodesvalue, shape = nodesshape, title = nodestitle, shadow = TRUE )
+nodes = data.frame(id = nodesid, 
+                   label = nodeslabel, 
+                   value = nodesvalue, 
+                   shape = nodesshape, 
+                   title = nodestitle, 
+                   shadow = TRUE ,
+                   level = nodeslevel)
 
 
 
@@ -417,20 +424,30 @@ edgesfrom = edgesfrom[-1]
 #test values -> move after find edges later
 #Edges variables
 edgeslabel = 'hi'
-edgeslength = 100
-edgeswidth = 1:length(edgesfrom)
+edgeslength = 1
+edgeswidth = 1
 edgesarrows = "to"
 edgesdashes = TRUE
 edgestitle = paste("Edge Name HERERE", 1:length(edgesfrom))
-edgessmooth = TRUE
+edgessmooth = FALSE
 edgesshadow = TRUE
 
-edges = data.frame(from = edgesfrom, to = edgesto, label = edgeslabel, length = edgeslength, width = edgeswidth,
-                   arrows = edgesarrows, dashes = edgesdashes, title = edgestitle, smooth = edgessmooth, shadow = edgesshadow)
+edges = data.frame(from = edgesfrom, 
+                   to = edgesto, 
+                   label = edgeslabel, 
+                   length = edgeslength, 
+                   width = edgeswidth,
+                   arrows = edgesarrows, 
+                   dashes = edgesdashes, 
+                   title = edgestitle, 
+                   smooth = edgessmooth,
+                   shadow = edgesshadow)
 
 
 
 #test
 
-visNetwork(nodes, edges, width = "100%", hierarchical = FALSE)
+visNetwork(nodes, edges, width = "100%")%>%
+  visHierarchicalLayout()
+
 
