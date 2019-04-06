@@ -300,31 +300,33 @@ if (length(which(lapply(Isotopes, length) == 0)) != 0){Isotopes <- Isotopes[-c(w
 ####Instead of DiagrammeR -> using visNetwork####
 
 
-
+#Ignore insignificant nodes....
 #first to determine ALL nodes
-IsotopesTerm = NA
-for (n in 1:length(Isotopes)){
+
+
+#IsotopesTerm = NA
+#for (n in 1:length(Isotopes)){
 #1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
-    if ((length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      & 
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      &
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      &
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-      &
-      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)) 
-            {IsotopesTerm[n] = names(Isotopes[n])}
-}
+#    if ((length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+#      & 
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+#      &
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+#      &
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+#      &
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)) 
+#            {IsotopesTerm[n] = names(Isotopes[n])}
+#}
 
 #Find what the final isotope is from those found:
-IsotopesTerminal = NA
-for (n in which(!is.na(IsotopesTerm) )){
-  IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
-}
+#IsotopesTerminal = NA
+#for (n in which(!is.na(IsotopesTerm) )){
+#  IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
+#}
 
 #clean the final isotope list
-IsotopesTerminal = na.omit(unique(IsotopesTerminal))
+#IsotopesTerminal = na.omit(unique(IsotopesTerminal))
 
 
 #set up names - pull from Isotopes master list
@@ -337,9 +339,9 @@ for (n in 1:(length(Isotopes))){
 }
 
 #add in terminal isotopes
-for (n in 1:(length(IsotopesTerminal))){
-  nodesnames[length(Isotopes)+n] = rbind(IsotopesTerminal[n])
-}
+#for (n in 1:(length(IsotopesTerminal))){
+#  nodesnames[length(Isotopes)+n] = rbind(IsotopesTerminal[n])
+#}
 
 #remove spaces
 nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
@@ -363,7 +365,6 @@ nodes = data.frame(id = nodesid, label = nodeslabel, value = nodesvalue, shape =
 
 #find edges
 #numbers in IsotopesEdgeto correspond to isotopes in nodes list order.
-
 IsotopesEdgeto = matrix(NA, nrow = 5, ncol = length(nodes[,2]))
 colnames(IsotopesEdgeto) = nodes[,2]
 rownames(IsotopesEdgeto) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
@@ -384,49 +385,29 @@ for (i in 1:(length(nodes))){
 #now split into groups based on decay mode
 #can create third dimension if you want on probability later#
 
+#create the vectors that will be inserted into the final visNet
+#numbers still correlate with isotope order of 'nodes'
 
-edgesto = data.frame(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
-edgesfrom = data.frame(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+#edgesto = matrix(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+#edgesfrom = matrix(NA, nrow = length(which(!is.na(IsotopesEdgeto))), ncol = 1)
+edgesto = NA
+edgesfrom = NA
 
-for (i in 1:length(IsotopesEdgeto[,1])) {
-  if (!is.na(IsotopesEdgeto[1,i])) {
-    edgesto[i] = IsotopesEdgeto[1,i]
+
+
+
+for (j in 1:length(IsotopesEdgeto[1,])) {
+  for (i in 1:length(IsotopesEdgeto[,1])) {
+    if (!is.na(IsotopesEdgeto[i,j])) {edgesfrom = c(edgesfrom, j)}
+    if (!is.na(IsotopesEdgeto[i,j])) {edgesto = c(edgesto, IsotopesEdgeto[i,j])}
+    
   }
 }
 
-then do which or exact or something
+#remove first NA from rows
 
-###Check on 
-#!is.null(which(nodes[,2] == Isotopes[[i]]$Decays$Beta$daughter))
-
-
-
-
-#(length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
-#IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
-
-
-
-
-
-
-
-
-
-#2) if alpha is present continue
-#3) find $daughter string, and find which Isotopes[#] it is 
-#4) output #-># into a vector
-#5) if beta is present, continue
-#6) find $daughter string, and find which Isotopes[#] it is 
-#7) output #-># into a vector
-#8) win
-
-
-
-
-
-
-
+edgesto = edgesto[-1]
+edgesfrom = edgesfrom[-1]
 
 
 
@@ -435,8 +416,6 @@ then do which or exact or something
 
 #test values -> move after find edges later
 #Edges variables
-edgesfrom = 1:length(nodesnames)
-edgesto = 2:(length(nodesnames)+1)
 edgeslabel = 'hi'
 edgeslength = 100
 edgeswidth = 1:length(edgesfrom)
@@ -452,6 +431,6 @@ edges = data.frame(from = edgesfrom, to = edgesto, label = edgeslabel, length = 
 
 
 #test
-visNetwork(nodes, edges, width = "100%")%>%
-  visLayout(hierarchical = TRUE)
+
+visNetwork(nodes, edges, width = "100%", hierarchical = FALSE)
 
