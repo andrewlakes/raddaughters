@@ -427,7 +427,7 @@ edgesthickness = matrix(NA, nrow = length(nodes), ncol = 2)
 for (i in 1:length(edgesthickness)) {
   if ((!is.null(Isotopes[[i]]$Decays$Alpha$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Alpha$branchYield}
   if ((!is.null(Isotopes[[i]]$Decays$Beta$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Beta$branchYield}
-  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Positron$branchYield}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes      [[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Positron$branchYield}
   if ((!is.null(Isotopes[[i]]$Decays$EC$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$EC$branchYield}
   if ((!is.null(Isotopes[[i]]$Decays$IT$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$IT$branchYield}
   
