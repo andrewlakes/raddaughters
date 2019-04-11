@@ -191,6 +191,12 @@ for (i in seq(dk_levs)) {
       # check to see if there is a half-life!  If not, the daughter isotope is stable by JEFF definitions
       hfl <- linesplit(grep(iso, readLines(con = isofile), value = TRUE)[1])
       if (length(hfl) == 0) {
+        addIso$terminal <- TRUE
+        addIso$t12 <-  NA
+        addIso$SA <- NA
+        addIso$Decays <- list()
+        Isotopes[[length(Isotopes)+1]] <- addIso
+        names(Isotopes)[length(Isotopes)] <- iso
         message('--NOTICE-- You have reached a stable isotope!')
         next
       }
