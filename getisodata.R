@@ -6,6 +6,7 @@ library(ggplot2)
 library(Scale)
 library(DiagrammeR)
 library(visNetwork)
+library(tidyr)
 
 
 data("periodicTable")
@@ -352,7 +353,8 @@ nodeslabel = nodesnames
 nodesvalue = 1
 nodesshape = 'circle'
 nodestitle = paste0("<p><b>", 1:length(nodesnames),"</b><br>Node title goes here</p>")
-nodeslevel = edgesfrom
+#temp insert, 'edgesfrom' is reevaluated later
+nodeslevel = 1:length(nodesnames)#edgesfrom
 #nodescolor = 'green'
 
 #create master nodes data.frame
@@ -361,7 +363,7 @@ nodes = data.frame(id = nodesid,
                    value = nodesvalue, 
                    shape = nodesshape, 
                    title = nodestitle, 
-                   shadow = TRUE ,
+                   shadow = TRUE,
                    level = nodeslevel)
 
 
@@ -417,33 +419,97 @@ edgesto = edgesto[-1]
 edgesfrom = edgesfrom[-1]
 
 
+
+#edgesfrom is now complete, redo 'nodes level'
+nodes$level = edgesfrom
+
+
+
+
+
+
 #Vairable width based on probability
 
 #for each to-from pair, uses order found in 'nodes' which matches isotope order. Pull directly from 'Isotopes'
+#ncol is number of types of destructions, alpha beta positron EC IT.
+edgesthickness = matrix(NA, nrow = length(nodes), ncol = 5)
 
-
-edgesthickness = matrix(NA, nrow = length(nodes), ncol = 2)
-
-for (i in 1:length(edgesthickness)) {
+for (i in 1:length(edgesthickness[,1])) {
   if ((!is.null(Isotopes[[i]]$Decays$Alpha$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Alpha$branchYield}
-  if ((!is.null(Isotopes[[i]]$Decays$Beta$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Beta$branchYield}
-  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes      [[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$Positron$branchYield}
-  if ((!is.null(Isotopes[[i]]$Decays$EC$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$EC$branchYield}
-  if ((!is.null(Isotopes[[i]]$Decays$IT$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {edgesthickness[i,1] = Isotopes[[i]]$Decays$IT$branchYield}
+  if ((!is.null(Isotopes[[i]]$Decays$Beta$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {edgesthickness[i,2] = Isotopes[[i]]$Decays$Beta$branchYield}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgesthickness[i,3] = Isotopes[[i]]$Decays$Positron$branchYield}
+  if ((!is.null(Isotopes[[i]]$Decays$EC$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {edgesthickness[i,4] = Isotopes[[i]]$Decays$EC$branchYield}
+  if ((!is.null(Isotopes[[i]]$Decays$IT$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {edgesthickness[i,5] = Isotopes[[i]]$Decays$IT$branchYield}
   
 }
+
+rownames(edgesthickness) = colnames(IsotopesEdgeto)
+colnames(edgesthickness) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
+#Transpose
+edgesthickness = t(edgesthickness)
+#now edgesthickness should match 'IsotopesEdgeto'
+
+#collapse list into order of 'nodes[,2]'
+
+edgesthicknessorder = matrix(NA, nrow = length(nodes[,2]), ncol = 1)
+
+for (j in 1:length(edgesthickness[1,])) {
+  for (i in 1:length(edgesthickness[,1])) {
+    if (!is.na(edgesthickness[i,j])) {edgesthicknessorder = c(edgesthicknessorder, edgesthickness[i,j])}
+  }
+}
+
+#collapse NA's
+edgesthicknessorder = na.omit(edgesthicknessorder)
+#make thicker for visual effect
+edgesthicknessorder = edgesthicknessorder*5
+
+#add colors to each type of destruction
+#color master
+colorkey = c("blue", "green", "orange", "purple", "red")
+colorkey = t(colorkey)
+colnames(colorkey) = rownames(edgesthickness)
+
+
+#describe each destruction type
+edgesthicknesscolor = matrix(NA, nrow = length(nodes[,2]), ncol = 1)
+
+for (j in 1:length(edgesthickness[1,])) {
+  for (i in 1:length(edgesthickness[,1])) {
+    if (!is.na(edgesthickness[i,j])) {edgesthicknesscolor = c(edgesthicknesscolor, rownames(edgesthickness)[i])}
+  }
+}
+
+#collapse NA's
+edgesthicknesscolor = na.omit(edgesthicknesscolor)
+
+#correlate name with 'colorkey'
+
+edgesthicknesscolorname = NA
+for (i in 1:length(edgesthicknesscolor)){
+  edgesthicknesscolorname[i] = colorkey[match(edgesthicknesscolor[i], colnames(colorkey))]
+}
+
+
+#combine all into one
+edgesthicknesscombo = cbind(edgesthicknesscolor, edgesthicknesscolorname, edgesthicknessorder)
+
+
+
+
 
 
 #test values -> move after find edges later
 #Edges variables
 edgeslabel = 'hi'
 edgeslength = 1
-edgeswidth = 1
+edgeswidth = edgesthicknesscombo[,3]
 edgesarrows = "to"
-edgesdashes = TRUE
+edgesdashes = FALSE
 edgestitle = paste("Edge Name HERERE", 1:length(edgesfrom))
 edgessmooth = FALSE
 edgesshadow = TRUE
+edgescolor = edgesthicknesscombo[,2]
 
 edges = data.frame(from = edgesfrom, 
                    to = edgesto, 
@@ -454,13 +520,14 @@ edges = data.frame(from = edgesfrom,
                    dashes = edgesdashes, 
                    title = edgestitle, 
                    smooth = edgessmooth,
-                   shadow = edgesshadow)
+                   shadow = edgesshadow,
+                   color = edgescolor)
 
 
 
 #test
 
-visNetwork(nodes, edges, width = "100%")%>%
+visNetwork(nodes, edges, width = "100%", height = "100%")%>%
   visHierarchicalLayout()
 
 
