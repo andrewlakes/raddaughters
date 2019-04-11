@@ -305,33 +305,33 @@ if (length(which(lapply(Isotopes, length) == 0)) != 0){Isotopes <- Isotopes[-c(w
 #first to determine ALL nodes
 
 
-#IsotopesTerm = NA
-#for (n in 1:length(Isotopes)){
-#1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
-#    if ((length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
-#      & 
-#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+# IsotopesTerm = NA
+# for (n in 1:length(Isotopes)){
+# #1) if decay daughter does not match any Isotopes[#], this is a terminal isotope, and create a new NODE
+#    if ((length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
 #      &
-#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
 #      &
-#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0) 
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
 #      &
-#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)) 
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0)
+#      &
+#      (length(which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[n]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))) == 0))
 #            {IsotopesTerm[n] = names(Isotopes[n])}
-#}
-
-#Find what the final isotope is from those found:
-#IsotopesTerminal = NA
-#for (n in which(!is.na(IsotopesTerm) )){
+# }
+# 
+# #Find what the final isotope is from those found:
+# IsotopesTerminal = NA
+# for (n in which(!is.na(IsotopesTerm) )){
 #  IsotopesTerminal[n] = Isotopes[[n]][[9]][[1]][[4]]
-#}
-
-#clean the final isotope list
-#IsotopesTerminal = na.omit(unique(IsotopesTerminal))
+# }
+# 
+# #clean the final isotope list
+# IsotopesTerminal = na.omit(unique(IsotopesTerminal))
 
 
 #set up names - pull from Isotopes master list
-#nodesnames = names(Isotopes)
+nodesnames = names(Isotopes)
 
 nodesnames = NA
 
@@ -339,10 +339,10 @@ for (n in 1:(length(Isotopes))){
   nodesnames[n] = rbind(paste(Isotopes[[n]]$A,Isotopes[[n]]$symb))
 }
 
-#add in terminal isotopes
-#for (n in 1:(length(IsotopesTerminal))){
+# #add in terminal isotopes
+# for (n in 1:(length(IsotopesTerminal))){
 #  nodesnames[length(Isotopes)+n] = rbind(IsotopesTerminal[n])
-#}
+# }
 
 #remove spaces
 nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
@@ -379,6 +379,7 @@ colnames(IsotopesEdgeto) = nodes[,2]
 rownames(IsotopesEdgeto) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
 
 
+#do a name check, and/or for terminal isotope name in 'IsotopesTerminal'
 
 
 for (i in 1:(length(nodes[,2]))){
