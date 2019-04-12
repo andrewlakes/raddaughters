@@ -16,16 +16,23 @@ setwd('./')
 
 Isotopes <- list()
 
-isofile <- '~/Projects/Rad_daughters/isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
+
+
+#
+##
+
+#Julian's isofile <- '~/Projects/Rad_daughters/isotopes/JEFF33-rdd_all.asc' # this is the master isotope data file
+#Andrew's isofile <- '~/raddaughters/JEFF33-rdd_all.asc' # this is the master isotope data file
+isofile <- '~/raddaughters/JEFF33-rdd_all.asc' # this is the master isotope data file
+
+##
+#
+
+
 
 # custom function for splitting lines at whitespaces and unlisting
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
-
-
-
-
-
 
 
 

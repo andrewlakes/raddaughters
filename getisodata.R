@@ -34,6 +34,12 @@ iso <- '227AC' # input the parent isotope!
 
 Isotopes <- readRDS(paste('decayLists/', iso, sep = ''))
 
+
+
+
+
+
+
 #set up names - pull from Isotopes master list
 nodesnames = names(Isotopes)
 
@@ -51,12 +57,21 @@ for (n in 1:(length(Isotopes))){
 #remove spaces
 nodesnames = str_replace_all(string=nodesnames, pattern=" ", repl="")
 
+nodesdata = NA
+
+for (i in 1:length(Isotopes)) {
+  nodesdata[i] = paste("<p><b>",Isotopes[[i]]$isotope,"</b><p>", "Z = ",Isotopes[[i]]$Z, "</b><p>", "Half-life (Days) = ", Isotopes[[i]]$t12, "</b><p>", "SA (Ci/mg) = ", Isotopes[[i]]$SA)
+}
+
+Isotopes[[1]]$
+
+
 #Node attributes
 nodesid = 1:length(nodesnames)
 nodeslabel = nodesnames
 nodesvalue = 1
 nodesshape = 'circle'
-nodestitle = paste0("<p><b>", 1:length(nodesnames),"</b><br>Node title goes here</p>")
+nodestitle = nodesdata
 #temp insert, 'edgesfrom' is reevaluated later
 nodeslevel = 1:length(nodesnames)#edgesfrom
 #nodescolor = 'green'
@@ -126,8 +141,8 @@ edgesfrom = edgesfrom[-1]
 
 
 #edgesfrom is now complete, redo 'nodes level'
-nodes$level = edgesfrom
-
+#-1 of total length since initial element is always alone
+nodes$level = edgesto[-1]-1
 
 
 
@@ -233,6 +248,7 @@ edges = data.frame(from = edgesfrom,
 #test
 
 visNetwork(nodes, edges, width = "100%", height = "100%")%>%
-  visHierarchicalLayout()
+  visHierarchicalLayout()%>%
+  visNodes(color = list(highlight = "white"))
 
 
