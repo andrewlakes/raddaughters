@@ -20,3 +20,6 @@ for (i in listIsos){
 
 # no 'you have reached a stable isotope!' output for:
 # 89SR, 244CM
+
+#no data for a whole bunch
+

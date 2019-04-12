@@ -30,7 +30,7 @@ isofile <- '~/raddaughters/JEFF33-rdd_all.asc'
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '227AC' # input the parent isotope! 
+iso <- '68GE' # input the parent isotope! 
 
 Isotopes <- readRDS(paste('decayLists/', iso, sep = ''))
 
@@ -103,9 +103,9 @@ rownames(IsotopesEdgeto) = c('Alpha', 'Beta', 'Positron', 'EC', 'IT')
 for (i in 1:(length(nodes[,2]))){
   if ((!is.null(Isotopes[[i]]$Decays$Alpha$daughter))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {IsotopesEdgeto[1,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Alpha$daughter, ignore_case=TRUE)), coll('TRUE'))))}
   if ((!is.null(Isotopes[[i]]$Decays$Beta$daughter))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {IsotopesEdgeto[2,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
-  if ((!is.null(Isotopes[[i]]$Decays$Positron$daughter))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {IsotopesEdgeto[3,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
-  if ((!is.null(Isotopes[[i]]$Decays$EC$daughter))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {IsotopesEdgeto[4,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
-  if ((!is.null(Isotopes[[i]]$Decays$IT$daughter))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {IsotopesEdgeto[5,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Beta$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$daughter))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {IsotopesEdgeto[3,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$Positron$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$EC$daughter))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {IsotopesEdgeto[4,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$EC$daughter, ignore_case=TRUE)), coll('TRUE'))))}
+  if ((!is.null(Isotopes[[i]]$Decays$IT$daughter))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {IsotopesEdgeto[5,i] = which((str_detect(str_detect(names(Isotopes), coll(Isotopes[[i]]$Decays$IT$daughter, ignore_case=TRUE)), coll('TRUE'))))}
   }
   
 
@@ -284,16 +284,21 @@ edges = data.frame(from = edgesfrom,
 
 #test
 
-visNetwork(nodes, edges, width = "100%", height = "100%")%>%
+visNetwork(nodes, edges, width = "100%", height = "100%", background = "rgba(0, 0, 0, 0)")%>%
   visHierarchicalLayout()%>%
   visNodes(color = list(highlight = "white"))%>%
-  visHierarchicalLayout(levelSeparation = 75)%>%
+  visHierarchicalLayout(levelSeparation = 100)%>%
   visInteraction(dragNodes = TRUE,
-                 hideEdgesOnDrag = TRUE,
+                 hideEdgesOnDrag = FALSE,
                  dragView = TRUE, 
                  zoomView = TRUE,
                  navigationButtons = TRUE,
                  tooltipDelay = 50,
-                 keyboard = TRUE)
+                 keyboard = TRUE,
+                 tooltipStyle = 'position: fixed;visibility:hidden;padding: 10px;
+                font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;
+                 -moz-border-radius: 30px;-webkit-border-radius: 30px;border-radius: 30px;
+                 border: 10px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+                 max-width:200px;word-break: break-all')
 
 
