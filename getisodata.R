@@ -30,7 +30,7 @@ isofile <- '~/raddaughters/JEFF33-rdd_all.asc'
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '227AC' # input the parent isotope! 
+iso <- '225AC' # input the parent isotope! 
 
 Isotopes <- readRDS(paste('decayLists/', iso, sep = ''))
 
@@ -63,7 +63,6 @@ for (i in 1:length(Isotopes)) {
   nodesdata[i] = paste("<p><b>",Isotopes[[i]]$isotope,"</b><p>", "Z = ",Isotopes[[i]]$Z, "</b><p>", "Half-life (Days) = ", Isotopes[[i]]$t12, "</b><p>", "SA (Ci/mg) = ", Isotopes[[i]]$SA)
 }
 
-Isotopes[[1]]$
 
 
 #Node attributes
@@ -140,9 +139,14 @@ edgesfrom = edgesfrom[-1]
 
 
 
-#edgesfrom is now complete, redo 'nodes level'
-#-1 of total length since initial element is always alone
-nodes$level = edgesto[-1]-1
+#edgesfrom is now complete, redo 'nodes level' based on isotope Z in 'nodes$title
+
+nodeslevels = NA
+
+for (i in 1:length(nodes[,1])){
+  nodes$level[i] = -Isotopes[[i]]$Z
+  
+}
 
 
 
@@ -249,6 +253,7 @@ edges = data.frame(from = edgesfrom,
 
 visNetwork(nodes, edges, width = "100%", height = "100%")%>%
   visHierarchicalLayout()%>%
-  visNodes(color = list(highlight = "white"))
+  visNodes(color = list(highlight = "white"))%>%
+  visHierarchicalLayout(levelSeparation = 75)
 
 
