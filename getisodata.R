@@ -30,7 +30,7 @@ isofile <- '~/raddaughters/JEFF33-rdd_all.asc'
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '68GE' # input the parent isotope! 
+iso <- '225AC' # input the parent isotope! 
 
 Isotopes <- readRDS(paste('decayLists/', iso, sep = ''))
 
@@ -287,7 +287,7 @@ edges = data.frame(from = edgesfrom,
 visNetwork(nodes, edges, width = "100%", height = "100%", background = "rgba(0, 0, 0, 0)")%>%
   visHierarchicalLayout()%>%
   visNodes(color = list(highlight = "white"))%>%
-  visHierarchicalLayout(levelSeparation = 100)%>%
+  visHierarchicalLayout(levelSeparation = 85)%>%
   visInteraction(dragNodes = TRUE,
                  hideEdgesOnDrag = FALSE,
                  dragView = TRUE, 
