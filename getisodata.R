@@ -216,7 +216,42 @@ for (i in 1:length(edgesthicknesscolor)){
 
 
 #combine all into one
-edgesthicknesscombo = cbind(edgesthicknesscolor, edgesthicknesscolorname, edgesthicknessorder)
+edgesthicknesscombo = cbind(edgesthicknesscolor, edgesthicknesscolorname, edgesthicknessorder/1.5)
+
+
+
+#make edgeslabels
+
+edgeslabels = matrix(NA, nrow = length(nodes[,2]), ncol = 5)
+for (i in 1:length(nodes[,2])) {
+  if ((!is.null(Isotopes[[i]]$Decays$Alpha$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {edgeslabels[i,1] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Alpha$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$Alpha$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$Beta$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {edgeslabels[i,2] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Beta$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$Beta$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgeslabels[i,3] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Positron$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$Positron$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$EC$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {edgeslabels[i,4] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$EC$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$EC$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$IT$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {edgeslabels[i,5] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$IT$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$IT$branchYiel*100)}
+  
+}
+
+edgeslabels = t(edgeslabels)
+colnames(edgeslabels) = colnames(edgesthickness)
+rownames(edgeslabels) = rownames(edgesthickness)
+
+Isotopes[[1]]$Decays$Alpha$Q
+
+edgeslabelsorder = matrix(NA, nrow = length(edgesthicknesscombo[,1]), ncol = 1)
+
+for (j in 1:length(edgeslabels[1,])) {
+  for (i in 1:length(edgeslabels[,1])) {
+    if (!is.na(edgeslabels[i,j])) {edgeslabelsorder = c(edgeslabelsorder, edgeslabels[i,j])}
+  }
+}
+
+#collapse NA's
+edgeslabelsorder = na.omit(edgeslabelsorder)
+
+
+
+
 
 
 
@@ -225,12 +260,12 @@ edgesthicknesscombo = cbind(edgesthicknesscolor, edgesthicknesscolorname, edgest
 
 #test values -> move after find edges later
 #Edges variables
-edgeslabel = 'hi'
+edgeslabel = edgesthicknesscombo[,1]
 edgeslength = 1
 edgeswidth = edgesthicknesscombo[,3]
 edgesarrows = "to"
 edgesdashes = FALSE
-edgestitle = paste("Edge Name HERERE", 1:length(edgesfrom))
+edgestitle = edgeslabelsorder
 edgessmooth = FALSE
 edgesshadow = TRUE
 edgescolor = edgesthicknesscombo[,2]
