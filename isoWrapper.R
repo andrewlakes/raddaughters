@@ -13,3 +13,10 @@ for (i in listIsos){
 }
 
 
+# Isotope error list
+# I131 'Error in seq.default(ndk) : 'from' must be a finite number
+#     In addition: Warning message:
+#     In eval(ei, envir) : NAs introduced by coercion
+
+# no 'you have reached a stable isotope!' output for:
+# 89SR, 244CM
