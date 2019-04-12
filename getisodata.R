@@ -224,11 +224,11 @@ edgesthicknesscombo = cbind(edgesthicknesscolor, edgesthicknesscolorname, edgest
 
 edgeslabels = matrix(NA, nrow = length(nodes[,2]), ncol = 5)
 for (i in 1:length(nodes[,2])) {
-  if ((!is.null(Isotopes[[i]]$Decays$Alpha$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {edgeslabels[i,1] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Alpha$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$Alpha$branchYiel*100)}
-  if ((!is.null(Isotopes[[i]]$Decays$Beta$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {edgeslabels[i,2] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Beta$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$Beta$branchYiel*100)}
-  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgeslabels[i,3] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Positron$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$Positron$branchYiel*100)}
-  if ((!is.null(Isotopes[[i]]$Decays$EC$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {edgeslabels[i,4] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$EC$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$EC$branchYiel*100)}
-  if ((!is.null(Isotopes[[i]]$Decays$IT$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {edgeslabels[i,5] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$IT$Q,"</b><p>", "Yield (%) = ",Isotopes[[i]]$Decays$IT$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$Alpha$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Alpha$daughter %in% nodes[,2]))) {edgeslabels[i,1] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Alpha$Q,"<p>", "Yield (%) = ",Isotopes[[i]]$Decays$Alpha$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$Beta$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Beta$daughter %in% nodes[,2]))) {edgeslabels[i,2] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Beta$Q,"<p>", "Yield (%) = ",Isotopes[[i]]$Decays$Beta$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$Positron$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$Positron$daughter %in% nodes[,2]))) {edgeslabels[i,3] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$Positron$Q,"<p>", "Yield (%) = ",Isotopes[[i]]$Decays$Positron$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$EC$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$EC$daughter %in% nodes[,2]))) {edgeslabels[i,4] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$EC$Q,"<p>", "Yield (%) = ",Isotopes[[i]]$Decays$EC$branchYiel*100)}
+  if ((!is.null(Isotopes[[i]]$Decays$IT$branchYiel))&(isTRUE(Isotopes[[i]]$Decays$IT$daughter %in% nodes[,2]))) {edgeslabels[i,5] = paste("<p>","Energy (keV) = ", Isotopes[[i]]$Decays$IT$Q,"<p>", "Yield (%) = ",Isotopes[[i]]$Decays$IT$branchYiel*100)}
   
 }
 
@@ -250,9 +250,7 @@ for (j in 1:length(edgeslabels[1,])) {
 edgeslabelsorder = na.omit(edgeslabelsorder)
 
 
-
-
-
+edgeslabelsorder = paste("<p><b>", edgesthicknesscombo[,1], "</b>",edgeslabelsorder)
 
 
 
