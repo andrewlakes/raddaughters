@@ -30,7 +30,7 @@ isofile <- '~/raddaughters/JEFF33-rdd_all.asc'
 linesplit <- function(x) unlist(strsplit(x, split = " "))[
   which(unlist(strsplit(x, split = " ")) != "")]
 
-iso <- '225AC' # input the parent isotope! 
+iso <- '227AC' # input the parent isotope! 
 
 Isotopes <- readRDS(paste('decayLists/', iso, sep = ''))
 
@@ -293,7 +293,7 @@ visNetwork(nodes, edges, width = "100%", height = "100%", background = "rgba(0, 
                  dragView = TRUE, 
                  zoomView = TRUE,
                  navigationButtons = TRUE,
-                 tooltipDelay = 50,
+                 tooltipDelay = 100,
                  keyboard = TRUE,
                  tooltipStyle = 'position: fixed;visibility:hidden;padding: 10px;
                 font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;
